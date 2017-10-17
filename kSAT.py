@@ -10,12 +10,12 @@ class KSAT:
         self.alpha = alpha_
         self.K = K_
         self.M = round(self.N * self.alpha)
+    
+    def get_param(self):
+        return self.N, self.M, self.alpha, self.K
 
     def generate_formula(self, savefile = None):
-        M = self.M
-        alpha = self.alpha
-        N = self.N
-        K = self.K
+        N, M, alpha, K = self.get_param()
         all_idx = np.arange(1, N+1,dtype=int)
         signs = np.array([-1,1],dtype=int)
 
@@ -33,12 +33,30 @@ class KSAT:
 
         return self
 
+    def solve_formula(self, read_file = None, n_sample = 1):
+        
+        N, M, alpha, K = self.get_param()
+
+        ## reading formula file or generating new random formula 
+        if read_file is None:
+            formula_file = "formula.tmp_N=%i_M=%i_alpha=%.2f_K=%i.cnf"%(N, M, alpha, K) # meaningful file name !
+            self.generate_formula(savefile=formula_file)
+        else:
+            formula_file=read_file
+        
+        
+
+
+
+        
+
+
 def main():
 
-    model = KSAT()
-    model.generate_formula(savefile="formula.tmp.cnf")
+    model = KSAT() # kSAT class
+    model.generate_formula(savefile="formula.tmp.cnf") # generate random formula (optional)
+    model.solve_formula(read_file="formula.tmp.cnf", n_sample=100) # read formula written in read_file and runs sp code
 
-    model.solve_formula(read_file="formula.tmp.cnf", n_sample=100)
 
 
 
