@@ -91,7 +91,6 @@ class KSAT:
     def check_solution(self, solution_file=None, solution_array=None, formula_file = None):
 
         K = self.K
-
         if formula_file is None:
             formula = self.formula
         else:
@@ -115,9 +114,15 @@ class KSAT:
 
 def main():
 
-    model = KSAT(N_=1000,alpha_=3.9,K_=3) # kSAT class
+    argv = sys.argv[1:]
+    type_arg = {'n':int,'alpha':float}
+    tmp = {a.split('=')[0]:a.split('=')[1] for a in argv}
+    for k,v in tmp.items():
+        tmp[k] = type_arg[k](v)
+
+    model = KSAT(N_ = tmp['n'], alpha_ = tmp['alpha'], K_ = 3) # kSAT class
     model.generate_formula(savefile="formula.tmp.cnf") # generate random formula (optional)
-    model.solve_formula(read_file="formula.tmp.cnf", n_sample= 1000) # read formula written in read_file and runs sp code
+    model.solve_formula(read_file="formula.tmp.cnf", n_sample= 20000) # read formula written in read_file and runs sp code
 
     #print(model.check_solution(solution_file='solution.tmp.lst',formula_file='.tmp.cnf.formula.permutation'))
 
