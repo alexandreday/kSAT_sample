@@ -1,0 +1,151 @@
+ASSIGNMENT FOUND
+verifying solution solution.tmp.lst...1000 variables found
+3900 clauses sat, 0 unsat (out of 3900 read)
+<bias>:0.549430
+fixed 1 biased var (+0 ucp)
+<bias>:0.547891
+fixed 1 biased var (+0 ucp)
+<bias>:0.546668
+fixed 1 biased var (+0 ucp)
+<bias>:0.545720
+fixed 1 biased var (+0 ucp)
+<bias>:0.544672
+fixed 1 biased var (+0 ucp)
+<bias>:0.544144
+fixed 1 biased var (+0 ucp)
+<bias>:0.543547
+fixed 1 biased var (+0 ucp)
+<bias>:0.542898
+fixed 1 biased var (+0 ucp)
+<bias>:0.541807
+fixed 1 biased var (+0 ucp)
+<bias>:0.541150
+fixed 1 biased var (+0 ucp)
+<bias>:0.540831
+fixed 1 biased var (+0 ucp)
+<bias>:0.540783
+fixed 1 biased var (+0 ucp)
+<bias>:0.540316
+fixed 1 biased var (+0 ucp)
+<bias>:0.539801
+fixed 1 biased var (+0 ucp)
+<bias>:0.539529
+fixed 1 biased var (+0 ucp)
+<bias>:0.538739
+fixed 1 biased var (+0 ucp)
+<bias>:0.538262
+fixed 1 biased var (+0 ucp)
+<bias>:0.537749
+fixed 1 biased var (+0 ucp)
+<bias>:0.537353
+fixed 1 biased var (+0 ucp)
+<bias>:0.536792
+fixed 1 biased var (+0 ucp)
+<bias>:0.536146
+fixed 1 biased var (+0 ucp)
+<bias>:0.535768
+fixed 1 biased var (+0 ucp)
+<bias>:0.535136
+fixed 1 biased var (+0 ucp)
+<bias>:0.533686
+fixed 1 biased var (+0 ucp)
+<bias>:0.532495
+fixed 1 biased var (+0 ucp)
+<bias>:0.531495
+fixed 1 biased var (+0 ucp)
+<bias>:0.530843
+fixed 1 biased var (+0 ucp)
+<bias>:0.529904
+fixed 1 biased var (+0 ucp)
+<bias>:0.529603
+fixed 1 biased var (+0 ucp)
+<bias>:0.529202
+fixed 1 biased var (+0 ucp)
+<bias>:0.527805
+fixed 1 biased var (+0 ucp)
+<bias>:0.527107
+fixed 1 biased var (+0 ucp)
+<bias>:0.526315
+fixed 1 biased var (+0 ucp)
+<bias>:0.525266
+fixed 1 biased var (+0 ucp)
+<bias>:0.524487
+fixed 1 biased var (+0 ucp)
+<bias>:0.523845
+fixed 1 biased var (+0 ucp)
+<bias>:0.522577
+fixed 1 biased var (+0 ucp)
+<bias>:0.522097
+fixed 1 biased var (+0 ucp)
+<bias>:0.521383
+fixed 1 biased var (+0 ucp)
+<bias>:0.520418
+fixed 1 biased var (+0 ucp)
+<bias>:0.519194
+fixed 1 biased var (+0 ucp)
+<bias>:0.518309
+fixed 1 biased var (+0 ucp)
+<bias>:0.517767
+fixed 1 biased var (+0 ucp)
+<bias>:0.516347
+fixed 1 biased var (+0 ucp)
+<bias>:0.515051
+fixed 1 biased var (+0 ucp)
+<bias>:0.513744
+fixed 1 biased var (+0 ucp)
+<bias>:0.512318
+fixed 1 biased var (+0 ucp)
+<bias>:0.511380
+fixed 1 biased var (+0 ucp)
+<bias>:0.510429
+fixed 1 biased var (+0 ucp)
+<bias>:0.509068
+fixed 1 biased var (+0 ucp)
+<bias>:0.508032
+fixed 1 biased var (+0 ucp)
+<bias>:0.506365
+fixed 1 biased var (+0 ucp)
+<bias>:0.504428
+fixed 1 biased var (+0 ucp)
+<bias>:0.502898
+fixed 1 biased var (+0 ucp)
+<bias>:0.500847
+fixed 1 biased var (+0 ucp)
+<bias>:0.499936
+fixed 1 biased var (+0 ucp)
+<bias>:0.497558
+fixed 1 biased var (+0 ucp)
+<bias>:0.495607
+fixed 1 biased var (+0 ucp)
+<bias>:0.493733
+fixed 1 biased var (+0 ucp)
+<bias>:0.492881
+fixed 1 biased var (+0 ucp)
+<bias>:0.490774
+fixed 1 biased var (+0 ucp)
+<bias>:0.489283
+fixed 1 biased var (+0 ucp)
+<bias>:0.487259
+fixed 1 biased var (+0 ucp)
+<bias>:0.485903
+fixed 1 biased var (+0 ucp)
+<bias>:0.484874
+fixed 1 biased var (+0 ucp)
+<bias>:0.482457
+fixed 1 biased var (+0 ucp)
+<bias>:0.478935
+fixed 1 biased var (+0 ucp)
+<bias>:0.476305
+fixed 1 biased var (+0 ucp)
+<bias>:0.471127
+fixed 1 biased var (+0 ucp)
+<bias>:0.454857
+fixed 1 biased var (+0 ucp)
+<bias>:0.000000
+paramagnetic state
+sub-formula has:
+	191 2-clauses
+	3102 3-clauses
+	930 variables
+calling walksat on the sub-formula (see output in wsat.tmp.out)
+WSAT did find the solution of the sub-formula
