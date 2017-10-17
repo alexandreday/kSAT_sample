@@ -118,7 +118,7 @@ def main():
     type_arg = {'n':int,'alpha':float}
     tmp = {a.split('=')[0]:a.split('=')[1] for a in argv}
     for k,v in tmp.items():
-        tmp[k] = type_arg[k](v)
+        tmp[k] = type_arg[k](float(v))
 
     model = KSAT(N_ = tmp['n'], alpha_ = tmp['alpha'], K_ = 3) # kSAT class
     model.generate_formula(savefile="formula.tmp.cnf") # generate random formula (optional)
