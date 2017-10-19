@@ -26,7 +26,6 @@ class KSAT:
         Returns
         -------
         self
-
         """
 
         N, M, alpha, K = self.get_param()
@@ -65,11 +64,9 @@ class KSAT:
         
         if n_sample == 1:
             os.system("./sp -l %s -s%i"%(formula_file,seed))
-
         else:
-
-            for _ in range(n_sample):
-                print("----------------> sample # \t", _)
+            for nn in range(n_sample):
+                print("----------------> sample # \t", nn)
                 #For generating SAT solutions sampled uniformly at random !
 
                 idx_ori = np.arange(1, N+1, dtype=int)
@@ -85,7 +82,7 @@ class KSAT:
                 file_tmp = '.tmp.cnf.formula.permutation'
                 np.savetxt('.tmp.cnf.formula.permutation', np.hstack((isometry_formula, zeros)), fmt='%i', delimiter=" ", header = 'p cnf %i %i'%(N,M), comments='')
 
-                os.system("./sp -l %s -s%i > out.txt"%(file_tmp, seed))
+                os.system("./sp -l %s -s%i > out.txt"%(file_tmp, seed)) # solves the permuted formula (equivalent !)
 
                 if self.check_solution(solution_file='solution.tmp.lst', formula_file='.tmp.cnf.formula.permutation'):
                     sol_tmp = np.loadtxt('solution.tmp.lst', dtype=int)
@@ -95,12 +92,65 @@ class KSAT:
                     is_solution = self.check_solution(solution_array=sol_tmp_2)
                     if is_solution:
                         solutions.append(sol_tmp_2)
-
-            solutions = np.sign(np.vstack(solutions))
-            np.savetxt('sol_N%i=_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solutions,fmt="%i")
-
+                if nn % (n_sample // 10) == 0 and n_sample > 10 and len(solutions) > 0:
+                    print(nn, " saving")
+                    solution_stack = np.sign(np.vstack(solutions))
+                    np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solution_stack,fmt="%i")
+            
+            if len(solutions) > 0:
+                solution_stack = np.sign(np.vstack(solutions))
+                np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solution_stack,fmt="%i")
             #print(np.vstack(solutions)[:,:10])
 
+    def check_all_solution(self, solution_file, formula_file, hist=True):
+        formula = np.loadtxt(formula_file, dtype=int, skiprows=1, delimiter=' ')[:,:3]
+        self.formula =formula
+        all_solution = np.loadtxt(solution_file, dtype=int)
+        N_sol, N = all_solution.shape
+
+        sol_result=[]
+        idx_var = np.arange(1,N+1,dtype=int)
+
+        count_true = 0
+        print("Checking %i solutions"%N_sol)
+        for i in range(N_sol):
+            sol = all_solution[i]*idx_var
+            res = self.check_solution(solution_array=sol)
+            if res is True:
+                count_true +=1
+            else:
+                print("Found wrong solution !?")
+        print("%i out of the %i solutions are correct"%(count_true,N_sol))
+        n_unique = len(np.unique(all_solution, axis=0))
+        print("number of unique solutions :\t %i"%(n_unique))
+    
+        if hist is True:
+            from matplotlib import pyplot as plt
+            import seaborn as sns
+            mag = np.mean(all_solution,axis=0)
+            nbin = max([N_sol/10,20])
+            N, M, alpha, K =  self.infer_parameters(solution_file)
+            sns.distplot(mag,bins=nbin,kde=False)
+            plt.xlabel('magnetization')
+            plt.title('nsample = %i, N=%i, M=%i, alpha=%.2f, K=%i'%(N_sol, N, M, alpha, K))
+            plt.show()
+
+    def infer_parameters(self, solution_file):
+        sol_s = solution_file.strip(".txt").split('_')
+        for p in sol_s:
+            if '=' in p:
+                ps = p.split('=')
+                if ps[0] == 'N':
+                    N = int(float(ps[1]))
+                elif ps[0] == 'M':
+                    M = int(float(ps[1]))
+                elif ps[0] == 'alpha':
+                    alpha = float(ps[1])
+                elif ps[0] == 'K':
+                    K = int(float(ps[1]))
+        
+        return N, M, alpha, K
+    
     def check_solution(self, solution_file=None, solution_array=None, formula_file = None):
 
         K = self.K
@@ -126,28 +176,31 @@ class KSAT:
         return np.count_nonzero(np.sum(res, axis=1) == -K) == 0 # check that all clauses are SAT
 
 def main():
+    """
+    Use in the following way (example):
+        python kSAT.py n=1000 alpha=3.5 n_sample=10000
 
+    What the code below does:
+
+    -> Generates a random K-SAT (pure K-SAT) formula, which is save in "formula.tmp_N=%_M=%i_alpha=%.2f_K=%i.cnf" file
+    -> Tries to find solutions to that formula. the number of solutions is specified by the n_sample parameter
+    -> Solutions are supposed to be sampled uniformly at random in the space of solutions
+
+    """
     argv = sys.argv[1:]
-    type_arg = {'n':int,'alpha':float}
+    type_arg = {'n':int,'alpha':float,'n_sample':int}
     tmp = {a.split('=')[0]:a.split('=')[1] for a in argv}
     for k,v in tmp.items():
         tmp[k] = type_arg[k](float(v))
 
+    assert len(tmp) == 3, "need to specify the 3 parameters, example : n=1000 alpha=3.5 n_sample=10000"
+    
     model = KSAT(N_ = tmp['n'], alpha_ = tmp['alpha'], K_ = 3) # kSAT class
-    model.generate_formula(savefile="formula.tmp.cnf") # generate random formula (optional)
-    model.solve_formula(read_file="formula.tmp.cnf", n_sample= 20000) # read formula written in read_file and runs sp code
-
-    #print(model.check_solution(solution_file='solution.tmp.lst',formula_file='.tmp.cnf.formula.permutation'))
-
-    #t = time.time()
-    #res = model.check_solution(solution_file='solution.tmp.lst',formula_file='formula.tmp.cnf')
-    #print(time.time()-t)
-    #print(res)
-
-
-
-
-
+    N, M, alpha, K = model.get_param()
+    formula_file = "formula.tmp_N=%i_M=%i_alpha=%.2f_K=%i.cnf"%(N, M, alpha, K)
+    
+    model.generate_formula(savefile=formula_file) # generate random formula (optional)
+    model.solve_formula(read_file=formula_file, n_sample=tmp['n_sample']) # read formula written in read_file and runs sp code
 
 if __name__ == "__main__":
     main()
