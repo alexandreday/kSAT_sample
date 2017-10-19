@@ -16,6 +16,19 @@ class KSAT:
         return self.N, self.M, self.alpha, self.K
 
     def generate_formula(self, savefile = None):
+        """ Generates a random formula based on N,M,alpha,K parameters specified in the constructor
+        
+        Parameters
+        -------------
+        savefile: str, optional
+            file in which the CNF formula is to be saved. This is done via np.savetxt()
+        
+        Returns
+        -------
+        self
+
+        """
+
         N, M, alpha, K = self.get_param()
         all_idx = np.arange(1, N+1,dtype=int)
         signs = np.array([-1,1],dtype=int)
