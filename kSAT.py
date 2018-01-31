@@ -3,6 +3,46 @@ import pickle, os, sys
 import time
 
 
+def main():
+    """
+    Use in the following way (example):
+        python kSAT.py n=1000 alpha=3.5 n_sample=10000
+
+    What the code below does:
+
+    -> Generates a random K-SAT (pure K-SAT) formula, which is save in "formula.tmp_N=%_M=%i_alpha=%.2f_K=%i.cnf" file
+    -> Tries to find solutions to that formula. the number of solutions is specified by the n_sample parameter
+    -> Solutions are supposed to be sampled uniformly at random in the space of solutions
+
+    """
+    argv = sys.argv[1:]
+    type_arg = {'n':int,'alpha':float,'n_sample':int}
+    tmp = {a.split('=')[0]:a.split('=')[1] for a in argv}
+    for k,v in tmp.items():
+        tmp[k] = type_arg[k](float(v))
+
+    assert len(tmp) == 3, "need to specify the 3 parameters, example : n=1000 alpha=3.5 n_sample=10000"
+    
+    model = KSAT(N_ = tmp['n'], alpha_ = tmp['alpha'], K_ = 3, random_state=0) # kSAT class
+    N, M, alpha, K = model.get_param()
+    formula_file = "formula.tmp_N=%i_M=%i_alpha=%.2f_K=%i.cnf"%(N, M, alpha, K)
+    
+    model.generate_formula(savefile=formula_file) # generate random formula (optional)
+    model.solve_formula(read_file=formula_file, n_sample=tmp['n_sample']) # read formula written in read_file and runs sp code
+
+################################
+################################
+################################
+
+def save(obj, file):
+    f = open(file,'wb')
+    pickle.dump(obj,f)
+    f.close()
+
+def load(file):
+    f = open(file,'rb')
+    return pickle.load(f)
+
 class KSAT:
 
     def __init__(self, N_ = 1000, alpha_ = 3.8, K_=3, random_state = 0):
@@ -52,6 +92,8 @@ class KSAT:
         seed = np.random.randint(0, sys.maxsize)
         solutions = []
         zeros = np.zeros(M,dtype=int).reshape(-1,1)
+        restart_count = 0
+        n_restart = 50
 
         ## reading formula file or generating new random formula 
         if read_file is None:
@@ -65,8 +107,17 @@ class KSAT:
         if n_sample == 1:
             os.system("./sp -l %s -s%i"%(formula_file,seed))
         else:
-            for nn in range(n_sample):
+            nn =0 
+            while nn < n_sample:
+                os.system("rm noconvergence.tmp.cnf")
+
+                if restart_count > n_restart :
+                    "X permutations, still not working !"
+                    print("Stopping, no solutions found !")
+                    break
+
                 print("----------------> sample # \t", nn)
+                #print(restart_count)
                 #For generating SAT solutions sampled uniformly at random !
 
                 idx_ori = np.arange(1, N+1, dtype=int)
@@ -82,31 +133,46 @@ class KSAT:
                 file_tmp = '.tmp.cnf.formula.permutation'
                 np.savetxt('.tmp.cnf.formula.permutation', np.hstack((isometry_formula, zeros)), fmt='%i', delimiter=" ", header = 'p cnf %i %i'%(N,M), comments='')
 
+                seed = np.random.randint(0,2**32-1)
                 os.system("./sp -l %s -s%i > out.txt"%(file_tmp, seed)) # solves the permuted formula (equivalent !)
 
-                if self.check_solution(solution_file='solution.tmp.lst', formula_file='.tmp.cnf.formula.permutation'):
-                    sol_tmp = np.loadtxt('solution.tmp.lst', dtype=int)
-                    sol_tmp_2 = np.array([np.sign(v)*inv_rand_permutation_map[abs(v)] for v in sol_tmp], dtype=int)
-                    sol_tmp_2 = sol_tmp_2[np.argsort(np.abs(sol_tmp_2))]
-                    
-                    is_solution = self.check_solution(solution_array=sol_tmp_2)
-                    if is_solution:
-                        solutions.append(sol_tmp_2)
-                if nn % (n_sample // 10) == 0 and n_sample > 10 and len(solutions) > 0:
-                    print(nn, " saving")
-                    solution_stack = np.sign(np.vstack(solutions))
-                    np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solution_stack,fmt="%i")
+                if os.path.exists("noconvergence.tmp.cnf"):
+                    "Solution not find, try a different permutation"
+                    restart_count +=1
+                else:
+                    nn+=1
+                    restart_count = 0
+
+                    if self.check_solution(solution_file='solution.tmp.lst', formula_file='.tmp.cnf.formula.permutation'):
+                        sol_tmp = np.loadtxt('solution.tmp.lst', dtype=int)
+                        sol_tmp_2 = np.array([np.sign(v)*inv_rand_permutation_map[abs(v)] for v in sol_tmp], dtype=int)
+                        sol_tmp_2 = sol_tmp_2[np.argsort(np.abs(sol_tmp_2))]
+                        
+                        is_solution = self.check_solution(solution_array=sol_tmp_2)
+                        if is_solution:
+                            solutions.append(sol_tmp_2)
+                    if nn % (n_sample // 10) == 0 and n_sample > 10 and len(solutions) > 0:
+                        print(nn, " saving")
+                        solution_stack = np.sign(np.vstack(solutions))
+                        solution_stack[solution_stack < 0] = 0
+                        save(np.packbits(solution_stack, axis=1),'sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K))
+                        #np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), np.packbits(solution_stack, axis=1), fmt="%i")
             
             if len(solutions) > 0:
                 solution_stack = np.sign(np.vstack(solutions))
-                np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solution_stack,fmt="%i")
+                solution_stack[solution_stack < 0] = 0
+                save(np.packbits(solution_stack, axis=1), 'sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K))
+                #np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), np.packbits(solution_stack, axis=1), fmt="%i")
+                #np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solution_stack,fmt="%i")
             #print(np.vstack(solutions)[:,:10])
 
-    def check_all_solution(self, solution_file, formula_file, hist=True):
+    def check_all_solution(self, N, solution_file, formula_file, hist=True):
         formula = np.loadtxt(formula_file, dtype=int, skiprows=1, delimiter=' ')[:,:3]
-        self.formula =formula
-        all_solution = np.loadtxt(solution_file, dtype=int)
-        N_sol, N = all_solution.shape
+        self.formula = formula
+        tmp = np.unpackbits(load(solution_file),axis=1)[:,N]
+        all_solution = tmp.astype(int)
+        N_sol = all_solution.shape[0]
+
 
         sol_result=[]
         idx_var = np.arange(1,N+1,dtype=int)
@@ -174,33 +240,6 @@ class KSAT:
         res = solution_map[abs_formula]*sign_formula
 
         return np.count_nonzero(np.sum(res, axis=1) == -K) == 0 # check that all clauses are SAT
-
-def main():
-    """
-    Use in the following way (example):
-        python kSAT.py n=1000 alpha=3.5 n_sample=10000
-
-    What the code below does:
-
-    -> Generates a random K-SAT (pure K-SAT) formula, which is save in "formula.tmp_N=%_M=%i_alpha=%.2f_K=%i.cnf" file
-    -> Tries to find solutions to that formula. the number of solutions is specified by the n_sample parameter
-    -> Solutions are supposed to be sampled uniformly at random in the space of solutions
-
-    """
-    argv = sys.argv[1:]
-    type_arg = {'n':int,'alpha':float,'n_sample':int}
-    tmp = {a.split('=')[0]:a.split('=')[1] for a in argv}
-    for k,v in tmp.items():
-        tmp[k] = type_arg[k](float(v))
-
-    assert len(tmp) == 3, "need to specify the 3 parameters, example : n=1000 alpha=3.5 n_sample=10000"
-    
-    model = KSAT(N_ = tmp['n'], alpha_ = tmp['alpha'], K_ = 3) # kSAT class
-    N, M, alpha, K = model.get_param()
-    formula_file = "formula.tmp_N=%i_M=%i_alpha=%.2f_K=%i.cnf"%(N, M, alpha, K)
-    
-    model.generate_formula(savefile=formula_file) # generate random formula (optional)
-    model.solve_formula(read_file=formula_file, n_sample=tmp['n_sample']) # read formula written in read_file and runs sp code
 
 if __name__ == "__main__":
     main()

@@ -739,11 +739,11 @@ int sequential_converge()
 	}
 	do {
 		eps=iterate();
-		fprintf(stderr,".");
+            //fprintf(stderr,".");
 		fflush(stderr);
 	} while (eps>epsilon && iter++<iterations);
 	if(eps<=epsilon) {
-		fprintf(stderr,":-)\n");
+            //fprintf(stderr,":-)\n");
 		return 1;
 	} else {
 		fprintf(stderr,"[%f]:-(\n",eps);

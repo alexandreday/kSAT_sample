@@ -20,7 +20,7 @@
 */
 
 //default parameters
-#define   ITERATIONS 1000  // max # iterations before giving up
+#define   ITERATIONS 10000  // max # iterations before giving up
 #define   EPSILONDEF 0.01     // convergence check
 #define   NPROBE 10        // Every NPROBE fixes, run walksat (or simann)
 
