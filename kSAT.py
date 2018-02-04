@@ -12,7 +12,6 @@ def main():
 
     -> Generates a random K-SAT (pure K-SAT) formula, which is save in "formula.tmp_N=%_M=%i_alpha=%.2f_K=%i.cnf" file
     -> Tries to find solutions to that formula. the number of solutions is specified by the n_sample parameter
-    -> Solutions are supposed to be sampled uniformly at random in the space of solutions
 
     """
     argv = sys.argv[1:]
