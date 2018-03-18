@@ -36,7 +36,7 @@
 %\preprint{APS/123-QED}
 
 %\title{The quantum state preparation problem is equivalent to a glass !}% 
-\title{Visualizing the glass transition using machine learning}%
+\title{Visualizing the glass transition using unsupervised learning}%
 %\title{The Spin Glass-like Phase of Optimal Quantum Control}%
 
 \author{Alexandre G.R. Day}
@@ -51,6 +51,30 @@ We study the solutions of two random boolean satisfiability problems 3-SAT and X
 %\keywords{Suggested keywords}
 %\pacs{67.85.Pq, 71.10.Fd} 
 \maketitle
+
+Landscape induces complexity, but not always : \cite{ricci2010being}
+
+\section{Introduction}
+Chris Moore discussion, etc. cite Mézard, stat. phys. and yourself.
+
+\section{Model \& Methods}
+XORSAT, 3-SAT. BP, SP and Gaussian elimination.
+
+\subsection{t-SNE}
+
+\subsection{Density clustering}
+
+\subsection{Results}
+\paragraph{Clustering XORSAT, 3-SAT}
+\paragraph{Entropy via density clustering}
+Relation to complexity and broader applications in stat. mechanics.
+
+\section{Conclusion}
+
+Packages are available for t-SNE and efficient clustering available at alexandreday github
+
+\section{Acknowledgements}
+
 
 %State preparation plays a quintessential role in present-day studies of quantum physics. The ability to reliably manipulate and control quantum states has proven crucial to many physical systems, from the quantum mechanical emulators ultracold atoms~\cite{bason_12,vanfrank_16,wigley_16} and trapped ions~\cite{islam_11,senko_15,jurcevic_14}, through solid-state systems like superconducting qubits~\cite{barends_16}, to nitrogen vacancy centres~\cite{zhou_17}. The non-equilibrium character of quantum state manipulation makes it a difficult and not well-understood problem of ever increasing importance to building a large-scale quantum computer~\cite{nielsen}.
 %
@@ -74,7 +98,7 @@ We study the solutions of two random boolean satisfiability problems 3-SAT and X
 %We thank ... for illuminating discussions. AD was support by an NSERC PGS-D. AD and PM acknowledge support from Simon's Foundation through the MMLS Fellow program. MB acknowledges support from the Emergent Phenomena in Quantum Systems initiative of the Gordon and Betty Moore Foundation and the ERC synergy grant UQUAM. DS acknowledges support of the FWO as post-doctoral fellow of the Research Foundation - Flanders. We used \href{https://github.com/weinbe58/QuSpin#quspin}{Quspin} for simulating the dynamics of the qubit systems~\cite{weinberg_17}. The authors are pleased to acknowledge that the computational work reported on in this paper was performed on the Shared Computing Cluster which is administered by \href{https://www.bu.edu/tech/support/research/}{Boston University's Research Computing Services}. The authors also acknowledge the Research Computing Services group for providing consulting support which has contributed to the results reported within this paper.
 
 \bibliographystyle{apsrev4-1}
-%\bibliography{control_RL}
+\bibliography{ref}
 
 \newpage
 
