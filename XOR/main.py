@@ -78,9 +78,6 @@ class SparseBool:
     def __init__(self):
         print('etc. etc.')
     
-
-
-
 def mod2_data(data):
     return [list(list(np.array(data[0],dtype=np.int8) %2))]
 
