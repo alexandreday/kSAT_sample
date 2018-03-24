@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  24 MAR 2018 12:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  24 MAR 2018 12:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -503,13 +503,18 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 115.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 115.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 115.
 Package rerunfilecheck Info: File `kSAT-TSNE.out' has not changed.
-(rerunfilecheck)             Checksum: B1AE881E6546D240955DD560FF201D57;565.
+(rerunfilecheck)             Checksum: FC4F7203114744BB590494F9BB4295FE;574.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right .
+
+
  ) 
 Here is how much of TeX's memory you used:
- 8162 strings out of 492995
- 115673 string characters out of 6132704
+ 8163 strings out of 492995
+ 115691 string characters out of 6132704
  222330 words of memory out of 5000000
- 11541 multiletter control sequences out of 15000+600000
+ 11542 multiletter control sequences out of 15000+600000
  18251 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,7n,28p,1306b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -526,7 +531,7 @@ texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/tex
 live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texli
 ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on kSAT-TSNE.pdf (1 page, 129953 bytes).
+Output written on kSAT-TSNE.pdf (1 page, 129418 bytes).
 PDF statistics:
  109 PDF objects out of 1000 (max. 8388607)
  93 compressed objects within 1 object stream
