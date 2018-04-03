@@ -12,4 +12,3 @@ a=pickle.load(open(fname,'rb'))
 ######### DATA ###########
 X = np.unpackbits(a).astype(int).reshape(-1,N)
 s = np.unpackbits(a).astype(int).reshape(-1,N).shape
-
