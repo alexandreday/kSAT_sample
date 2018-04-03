@@ -156,13 +156,13 @@ class KSAT:
                         print(nn, " saving")
                         solution_stack = np.sign(np.vstack(solutions))
                         solution_stack[solution_stack < 0] = 0
-                        save(np.packbits(solution_stack, axis=1),'sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K))
+                        save(np.packbits(solution_stack),'sol_N=%i_M=%i_alpha=%.2f_K=%i.pkl'%(N,M,alpha,K))
                         #np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), np.packbits(solution_stack, axis=1), fmt="%i")
             
             if len(solutions) > 0:
                 solution_stack = np.sign(np.vstack(solutions))
                 solution_stack[solution_stack < 0] = 0
-                save(np.packbits(solution_stack, axis=1), 'sol_N=%i_M=%i_alpha=%.2f_K=%i.pkl'%(N,M,alpha,K))
+                save(np.packbits(solution_stack), 'sol_N=%i_M=%i_alpha=%.2f_K=%i.pkl'%(N,M,alpha,K))
                 #np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), np.packbits(solution_stack, axis=1), fmt="%i")
                 #np.savetxt('sol_N=%i_M=%i_alpha=%.2f_K=%i.txt'%(N,M,alpha,K), solution_stack,fmt="%i")
             #print(np.vstack(solutions)[:,:10])
