@@ -21,7 +21,7 @@ for a in argv:
 
 alpha = param['M']/param['N']
 
-new_dir = alpha=%.3f'%alpha
+new_dir = 'alpha=%.3f'%alpha
 cmd = 'mkdir %s'%new_dir
 cmd_rm = 'rm -rf %s'%new_dir
 os.system(cmd_rm) # create new directory
