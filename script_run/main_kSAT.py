@@ -27,4 +27,4 @@ cmd_rm = 'rm -rf %s'%new_dir
 os.system(cmd_rm) # create new directory
 os.system(cmd) # create new directory
 os.system('cp merge sp verify walksat kSAT.py checks_sol.py %s/'%new_dir)
-os.system('~/.conda/envs/py35/bin/python %s/kSAT.py %s %s %s'%(new_dir, argv[0], argv[1] argv[2]))
+os.system('~/.conda/envs/py35/bin/python %s/kSAT.py %s %s %s'%(new_dir, argv[0], argv[1], argv[2]))
