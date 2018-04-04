@@ -46,5 +46,27 @@ class TREENODE:
         return child 
     
 class DPLL:
-    def __init__(self):
-        return 
+    def __init__(self, A, y, maxsearch = 1000): # perform DPLL search based on the UT form !
+        self.A = A
+        self.y = y
+        self.tree = TREENODE()
+        self.x = -1*np.ones(A.shape[1], dtype=int)
+
+    def find_solution(self):
+        A = self.A
+        y = self.y 
+        isSAT = True
+        n_clause, n_var = A.shape
+        first_clause = A[-1, :]
+        pos = np.where(first_clause == 1)[0]
+        root = TREENODE(id_ = pos[-1]) # start from 0 then 1
+
+        #DPLL(
+        while isSAT:
+
+
+
+
+
+
+
