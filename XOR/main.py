@@ -1,7 +1,58 @@
 import numpy as np
 from scipy.sparse import coo_matrix, csc_matrix
 
+
+def swap_rows(A, ri, rj):
+    tmp = A[ri, :]
+    A[ri, :] = A[rj, :]
+    A[rj, :] = tmp
+
+def add_to_row(A, ri, rj): # A[ri, :] <- A[ri, :] + A[rj, :]
+    A[ri, :] = A[ri, :] + A[rj, :]
+
+def make_UT(A_, y_):
+    A = np.copy(A_)
+    y = np.copy(y_)
+
+    nr, nc = A.shape
+
+    for j in range(nc):
+        #A.get_first_index_non_zero(col = j)
+        pos = np.where(A[:,j] == 1)[0]
+
+        if len(pos) > 0: # there are non-zero elements in this column
+            if A[j,j] == 0:
+                if len(pos) > 0:
+                    if pos[-1] > j:
+                        swap_rows(A, j, pos[-1])
+                        pos = pos[:-1] 
+                    else: # already UT !
+                        pos = []
+            for p in pos:
+                if p != j: # making elements zero !
+                    add_to_row(A, p, j)
+                    y[p] += y[j]
+        A = np.remainder(A, 2)
+        print(A)
+        if j == 4:
+            exit()
+        #exit()
+        y = np.remainder(y, 2)
+    
+    return A, y
+
 def main():
+
+    np.random.seed(0)
+    A = np.random.randint(0, 2, 40).reshape(8, 5)
+    y = np.random.randint(0,2, 8)
+    print(A)
+    print(y)
+    A, y = make_UT(A, y)
+    print(A)
+    print(y)
+
+    exit()
     np.random.seed(1)
     y, A = construct_formula(10, 0.5)
 
@@ -44,7 +95,7 @@ def main():
 def solve(A, y):
 
     # A is the adjacency matrix
-    # Gaussian elimination mod 2, with sparse matrices
+    # Gaussian elimination mod 2
     r, c = A.shape
 
     for j in range(c):
