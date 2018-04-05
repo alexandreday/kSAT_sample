@@ -75,10 +75,6 @@ def make_UT(A_, y_):
 
     return A, y, col_swap
 
-def walkSAT(A, y): 
-    # simple walkSAT to find solutions => fix variables at random 
-    # and try to find a solution by satisfying one constraint at the time
-    return
 
 def check_all_solution(A, y):
     nvar = A.shape[1]
@@ -99,29 +95,38 @@ def swap_back(sol, swap_history):
 
 def main():
 
-    #np.random.seed(0)
-    nr = 7
-    nc = 8
+    #np.random.seed(15)
+    n_var = 14
+    n_clause = 10
+    n_col = n_var
+    n_row = n_clause
 
-    A = np.random.randint(0, 2, nc*nr).reshape(nr, nc)
+    A = np.random.randint(0, 2, n_col*n_row).reshape(n_row, n_col)
 
-    y = np.random.randint(0, 2, nr)
+    y = np.random.randint(0, 2, n_row)
     sol_list = check_all_solution(A, y)
     
-    print(A)
-    print(y)   
-    print(sol_list)
+    #print(A)
+    #print(y)   
+    print("Number of solutions:", len(sol_list))
     #exit()
     Anew, ynew, swap_history = make_UT(A, y)
 
 
     print(Anew)
     print(ynew)
+    #exit()
     sol_list_new = check_all_solution(Anew, ynew)
-    for s in sol_list_new:
+    #print(swap_history)
+    for i, s in enumerate(sol_list_new):
         swap_back(s, swap_history)
+        equiv = False
+        for ss in sol_list:
+            if np.array_equal(s,ss):
+                equiv=True
+        assert equiv, "NOT EQUIVALENT"
 
-    print(sol_list_new)
+    #print(sol_list_new)
     #print(sol)
     exit()
     for i in range(A.shape[0]):
