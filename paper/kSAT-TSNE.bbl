@@ -6,7 +6,7 @@
 %Control: page (0) single
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
-\begin{thebibliography}{3}%
+\begin{thebibliography}{7}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -56,6 +56,51 @@
   {Ricci-Tersenghi}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo
   {journal} {Science}\ }\textbf {\bibinfo {volume} {330}},\ \bibinfo {pages}
   {1639} (\bibinfo {year} {2010})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {{Mehta}}\ \emph {et~al.}(2018)\citenamefont
+  {{Mehta}}, \citenamefont {{Bukov}}, \citenamefont {{Wang}}, \citenamefont
+  {{Day}}, \citenamefont {{Richardson}}, \citenamefont {{Fisher}},\ and\
+  \citenamefont {{Schwab}}}]{2018arXiv180308823M}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {{Mehta}}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {{Bukov}}},
+  \bibinfo {author} {\bibfnamefont {C.-H.}\ \bibnamefont {{Wang}}}, \bibinfo
+  {author} {\bibfnamefont {A.~G.~R.}\ \bibnamefont {{Day}}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {{Richardson}}}, \bibinfo {author}
+  {\bibfnamefont {C.~K.}\ \bibnamefont {{Fisher}}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {D.~J.}\ \bibnamefont {{Schwab}}},\ }\href@noop {} {\bibfield
+  {journal} {\bibinfo  {journal} {ArXiv e-prints}\ } (\bibinfo {year}
+  {2018})},\ \Eprint {http://arxiv.org/abs/1803.08823} {arXiv:1803.08823
+  [physics.comp-ph]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {{Day}}\ \emph {et~al.}(2018)\citenamefont {{Day}},
+  \citenamefont {{Bukov}}, \citenamefont {{Weinberg}}, \citenamefont
+  {{Mehta}},\ and\ \citenamefont {{Sels}}}]{2018arXiv180310856D}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~G.~R.}\
+  \bibnamefont {{Day}}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {{Bukov}}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {{Weinberg}}},
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {{Mehta}}}, \ and\
+  \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {{Sels}}},\ }\href@noop {}
+  {\bibfield  {journal} {\bibinfo  {journal} {ArXiv e-prints}\ } (\bibinfo
+  {year} {2018})},\ \Eprint {http://arxiv.org/abs/1803.10856} {arXiv:1803.10856
+  [quant-ph]} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {M{\'e}zard}\ \emph {et~al.}(2003)\citenamefont
+  {M{\'e}zard}, \citenamefont {Ricci-Tersenghi},\ and\ \citenamefont
+  {Zecchina}}]{mezard2003two}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {M{\'e}zard}}, \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Ricci-Tersenghi}}, \ and\ \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Zecchina}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
+  {Journal of Statistical Physics}\ }\textbf {\bibinfo {volume} {111}},\
+  \bibinfo {pages} {505} (\bibinfo {year} {2003})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Davis}\ and\ \citenamefont
+  {Putnam}(1960)}]{davis1960computing}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Davis}}\ and\ \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Putnam}},\
+  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Journal of the ACM
+  (JACM)}\ }\textbf {\bibinfo {volume} {7}},\ \bibinfo {pages} {201} (\bibinfo
+  {year} {1960})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Venturelli}\ \emph {et~al.}(2015)\citenamefont
   {Venturelli}, \citenamefont {Mandra}, \citenamefont {Knysh}, \citenamefont
   {O'Gorman}, \citenamefont {Biswas},\ and\ \citenamefont
