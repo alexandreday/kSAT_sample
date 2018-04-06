@@ -63,9 +63,13 @@ Chris Moore discussion, etc. cite Mézard, stat. phys. and glassy phases have bee
 the context of quantum optimal control \cite{2018arXiv180310856D}.
 
 \begin{figure}[t!]	
-	\includegraphics[width=1.0\columnwidth]{figs/fig1.png}\\
+	\includegraphics[width=1.0\columnwidth]{figs/rugged_vf-crop.pdf}
+	\caption{\label{fig:schematic} Problem setting. (a) Rugged landscape cartoon picture. Optimizing rugged landscapes is hard ! Obviously. }
+\end{figure}
+
+\begin{figure}[t!]
 	\includegraphics[width=1.0\columnwidth]{figs/cartoon_pdiag-crop.pdf}
-	\caption{\label{fig:schematic} Problem setting. (a) Rugged landscape cartoon picture. (b) In 3 dimensions we project attractors to a 2D space}
+	\caption{\label{fig:schematic2} (a) In 3 dimensions we project attractors to a 2D space}
 \end{figure}
 
 \section{Model studied}
@@ -75,9 +79,9 @@ H=-\sum_{\langle ijk \rangle}^{\alpha N} J_{ijk} s_i s_j s_k, \label{pspin}
 \end{equation}
 where $J_{ijk}$ take value $+1$ or $-1$. An instance of the diluted $p$-spin model is obtained by choosing $\alpha N$ such couplings uniformly at random. The zero-temperature limit of the $p$-spin model
 is equivalent to the $p$-XORSAT problem from computer science. The $p$-XORSAT corresponds to a linear system of equations in base 2 of the form $A\vec{x}=\vec{y}$ obtained from the mapping $s_i=(-1)^{x_i},~J_{ijk}=(-1)^{y_{ijk}}$, where $A$ is a sparse $N\times M$ matrix encoding the interactions with the $M$ constraints $\vec{y}$. As such, the problem of determining wether a XORSAT formula is satisfiable or equivalently
-if the $p$-spin model possesses a non-frustrated ground-state Eq.\eqref{pspin} can be solved efficiently using Gaussian elimination which scales like $\mathcal{O}(N^3)$. The statistical properties of XORSAT have been studied using powerful methods from spin-glass physics \cite{mezard2003two}. In order to sample XORSAT solutions at random we used a combination 
-of gaussian elimination and DPLL algorithm \cite{davis1960computing} on the reduced formulas. The results are presented in figure \ref{t-SNE}.
+if the $p$-spin model possesses a non-frustrated ground-state Eq.\eqref{pspin} can be solved efficiently using Gaussian elimination which scales like $\mathcal{O}(N^3)$. The statistical properties of XORSAT have been studied using powerful methods from spin-glass physics \cite{mezard2003two}. We sampled the XORSAT solutions uniformly at random using Gaussian elimination. The results are presented in figure \ref{t-SNE}.
 \\
+% gaussian elimination and DPLL algorithm \cite{davis1960computing} on the reduced formulas. The results are presented in figure \ref{t-SNE}.
 \emph{$k$-SAT}---.
 The $k$-SAT problem blablabla 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  5 APR 2018 18:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  6 APR 2018 15:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -496,38 +496,41 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 Missing character: There is no é in font cmr10!
 
-<figs/fig1.png, id=53, 418.56375pt x 285.065pt>
-File: figs/fig1.png Graphic file (type png)
- <use figs/fig1.png>
-Package pdftex.def Info: figs/fig1.png used on input line 66.
-(pdftex.def)             Requested size: 246.0pt x 167.53877pt.
+<figs/rugged_vf-crop.pdf, id=53, 365.365pt x 277.035pt>
+File: figs/rugged_vf-crop.pdf Graphic file (type pdf)
 
-<figs/cartoon_pdiag-crop.pdf, id=55, 280.04625pt x 208.78pt>
+<use figs/rugged_vf-crop.pdf>
+Package pdftex.def Info: figs/rugged_vf-crop.pdf used on input line 66.
+(pdftex.def)             Requested size: 246.0pt x 186.52979pt.
+
+<figs/cartoon_pdiag-crop.pdf, id=54, 280.04625pt x 208.78pt>
 File: figs/cartoon_pdiag-crop.pdf Graphic file (type pdf)
 
 <use figs/cartoon_pdiag-crop.pdf>
-Package pdftex.def Info: figs/cartoon_pdiag-crop.pdf used on input line 67.
+Package pdftex.def Info: figs/cartoon_pdiag-crop.pdf used on input line 71.
 (pdftex.def)             Requested size: 246.0pt x 183.40518pt.
  [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./fi
-gs/fig1.png> <./figs/cartoon_pdiag-crop.pdf>]
-<figs/fig2.png, id=178, 661.47125pt x 486.81876pt>
+gs/rugged_vf-crop.pdf> <./figs/cartoon_pdiag-crop.pdf>] <figs/fig2.png, id=209,
+ 661.47125pt x 486.81876pt>
 File: figs/fig2.png Graphic file (type png)
- <use figs/fig2.png>
-Package pdftex.def Info: figs/fig2.png used on input line 95.
+
+<use figs/fig2.png>
+Package pdftex.def Info: figs/fig2.png used on input line 99.
 (pdftex.def)             Requested size: 246.0pt x 181.04121pt.
-
-<figs/fig3.png, id=179, 480.79625pt x 394.47375pt>
+ <figs/fig3.png, id=211, 480.79625pt x 394.47375pt>
 File: figs/fig3.png Graphic file (type png)
- <use figs/fig3.png>
-Package pdftex.def Info: figs/fig3.png used on input line 101.
-(pdftex.def)             Requested size: 246.0pt x 201.83504pt.
 
-<figs/fig4.png, id=180, 417.56pt x 402.50375pt>
+<use figs/fig3.png>
+Package pdftex.def Info: figs/fig3.png used on input line 105.
+(pdftex.def)             Requested size: 246.0pt x 201.83504pt.
+ <figs/fig4.png, id=212, 417.56pt x 402.50375pt>
 File: figs/fig4.png Graphic file (type png)
- <use figs/fig4.png>
-Package pdftex.def Info: figs/fig4.png used on input line 106.
+
+<use figs/fig4.png>
+Package pdftex.def Info: figs/fig4.png used on input line 110.
 (pdftex.def)             Requested size: 246.0pt x 237.13121pt.
- [2 <./figs/fig2.png> <./figs/fig3.png> <./figs/fig4.png>] (./kSAT-TSNE.bbl
+ [2 <./figs/fig2.png> <./figs/fig3.png> <./figs/fig4.png>]
+(./kSAT-TSNE.bbl
 Underfull \hbox (badness 1137) in paragraph at lines 70--76
  []\OT1/cmr/m/n/9 P. Mehta, M. Bukov, C.-H. Wang, A. G. R. Day,
  []
@@ -538,28 +541,22 @@ Underfull \hbox (badness 1122) in paragraph at lines 114--119
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 158.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 158.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 162.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 162.
  [3] (./kSAT-TSNE.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 158.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 158.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 162.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 162.
+Package rerunfilecheck Info: File `kSAT-TSNE.out' has not changed.
+(rerunfilecheck)             Checksum: 720655459FF868E407F007F122844E8F;621.
 
-
-Package rerunfilecheck Warning: File `kSAT-TSNE.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `kSAT-TSNE.out':
-(rerunfilecheck)             Before: 83C706A3ACCA646A7EF4D775B838DDC7;620
-(rerunfilecheck)             After:  720655459FF868E407F007F122844E8F;621.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 8226 strings out of 492995
- 116738 string characters out of 6132704
- 218008 words of memory out of 5000000
+ 8227 strings out of 492995
+ 116799 string characters out of 6132704
+ 217028 words of memory out of 5000000
  11584 multiletter control sequences out of 15000+600000
  18251 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -581,10 +578,10 @@ ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2017/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2017/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on kSAT-TSNE.pdf (3 pages, 560508 bytes).
+Output written on kSAT-TSNE.pdf (3 pages, 791045 bytes).
 PDF statistics:
- 272 PDF objects out of 1000 (max. 8388607)
- 216 compressed objects within 3 object streams
- 31 named destinations out of 1000 (max. 500000)
+ 304 PDF objects out of 1000 (max. 8388607)
+ 241 compressed objects within 3 object streams
+ 32 named destinations out of 1000 (max. 500000)
  114 words of extra memory for PDF output out of 10000 (max. 10000000)
 

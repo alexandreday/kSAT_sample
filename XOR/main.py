@@ -131,7 +131,7 @@ def main():
         equiv = False
         for ss in sol_list:
             if np.array_equal(s,ss):
-                equiv=True
+                equiv=True  
         assert equiv, "NOT EQUIVALENT"
 
     #print(sol_list_new)
