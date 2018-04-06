@@ -75,7 +75,25 @@ def make_UT(A_, y_):
 
     return A, y, col_swap # do we care about this => maybe, maybe not.
 
+def make_diag(A_, y_):
+    A = np.copy(A_)
+    y = np.copy(y_)
+    M, N = A.shape
+    # starting from last row, reduce:
+    for i in reversed(range(M)):
+        #print(i)
+        if A[i,i] == 1:
+            pos = np.where(A[:,i] == 1)[0]
+            for r in pos:
+                if r < i:
+                    A[r, :] -= A[i, :]
+                    y[r] -= y[i]
 
+        A = np.remainder(A, 2)
+        y = np.remainder(y, 2)
+
+    return A, y
+        
 def check_all_solution(A, y):
     nvar = A.shape[1]
     nsol = 2**nvar
@@ -86,6 +104,41 @@ def check_all_solution(A, y):
         if check_solution(A, y, sol):
             sol_list.append(sol)
     return sol_list
+
+def enumerate_solution(Areduce, y_):
+    A = np.copy(Areduce)
+    y = np.copy(y_)
+    M, N = Areduce.shape
+    N_free = N-M
+    N_check = 2**N_free
+    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
+
+    test = np.sum(A, axis = 1)
+    free_add = np.count_nonzero(y[test == 0] == 0)
+    if np.count_nonzero(y[test == 0] == 1) > 0:
+        return []
+    
+    all_sol = []
+    N_check = 2**(N_free+free_add)
+
+    for i in range(N_check):
+        xsol = np.zeros(N,dtype=int)
+        xsol[-N_free:] = b2_array(i)
+        for i in reversed(range(M)):
+            if np.sum(A[i,:]*xsol) % 2 == y[i]:
+                bit = 0
+            else:
+                bit = 1
+
+            if A[i,i] == 1:
+                xsol[i] = bit
+            else:
+                xsol[i] = (bit+1)%2
+
+        all_sol.append(xsol)
+    print("HERJEBRHEREH")
+    print(all_sol)
+    return all_sol
 
 def swap_back(sol, swap_history):
     nswap = len(swap_history)
@@ -118,12 +171,20 @@ def main():
     print("Number of solutions:", len(sol_list))
     #exit()
     Anew, ynew, swap_history = make_UT(A, y)
-
-
     print(Anew)
     print(ynew)
+    Afinal, yfinal = make_diag(Anew, ynew)
+
+    print(Afinal)
+    print(yfinal)
+    sol_list_new = enumerate_solution(Afinal, yfinal)
+
     #exit()
-    sol_list_new = check_all_solution(Anew, ynew)
+
+    #print(Anew)
+    #print(ynew)
+    #exit()
+    #sol_list_new = check_all_solution(Anew, ynew)
     print("Number of solutions:", len(sol_list_new))
     #print(swap_history)
     for i, s in enumerate(sol_list_new):
