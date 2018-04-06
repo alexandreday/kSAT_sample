@@ -73,7 +73,7 @@ def make_UT(A_, y_):
             A = np.remainder(A, 2)
             y = np.remainder(y, 2)
 
-    return A, y, col_swap
+    return A, y, col_swap # do we care about this => maybe, maybe not.
 
 
 def check_all_solution(A, y):
@@ -94,17 +94,24 @@ def swap_back(sol, swap_history):
         swap(sol, p1, p2)
 
 def main():
+    from xor import generate_sparse
 
-    #np.random.seed(15)
-    n_var = 14
-    n_clause = 10
-    n_col = n_var
-    n_row = n_clause
+    N = 8
+    M = 6
+    K = 3
+    n_col = N
+    n_row = M
 
-    A = np.random.randint(0, 2, n_col*n_row).reshape(n_row, n_col)
-
+    A, f = generate_sparse(N=N, M=M, K=K)
     y = np.random.randint(0, 2, n_row)
     sol_list = check_all_solution(A, y)
+
+    #print(np.sum(A,axis=1))
+    #exit()
+    print(A)
+    print('col sum:\t',np.sum(A,axis=0))
+    print(y)
+    #exit()
     
     #print(A)
     #print(y)   
@@ -117,6 +124,7 @@ def main():
     print(ynew)
     #exit()
     sol_list_new = check_all_solution(Anew, ynew)
+    print("Number of solutions:", len(sol_list_new))
     #print(swap_history)
     for i, s in enumerate(sol_list_new):
         swap_back(s, swap_history)
