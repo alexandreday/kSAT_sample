@@ -136,8 +136,7 @@ def enumerate_solution(Areduce, y_):
                 xsol[i] = (bit+1)%2
 
         all_sol.append(xsol)
-    print("HERJEBRHEREH")
-    print(all_sol)
+
     return all_sol
 
 def swap_back(sol, swap_history):
@@ -154,10 +153,11 @@ def main():
     K = 3
     n_col = N
     n_row = M
-
+    np.random.seed(5)
     A, f = generate_sparse(N=N, M=M, K=K)
     y = np.random.randint(0, 2, n_row)
     sol_list = check_all_solution(A, y)
+    print('marginals:\t', np.mean(np.vstack(sol_list),axis=0))
 
     #print(np.sum(A,axis=1))
     #exit()
@@ -168,16 +168,33 @@ def main():
     
     #print(A)
     #print(y)   
-    print("Number of solutions:", len(sol_list))
+    print("Number of solutions original:", len(sol_list))
     #exit()
     Anew, ynew, swap_history = make_UT(A, y)
     print(Anew)
     print(ynew)
     Afinal, yfinal = make_diag(Anew, ynew)
+    sol_list_new = enumerate_solution(Afinal, yfinal)
+    
+    print(sol_list_new[2])
+    print(Afinal)
+    print(yfinal)
+    exit()
+    for n,s in enumerate(sol_list_new):
+        print(n)
+        for i,c in enumerate(Afinal):
+            print(i)
+            if np.sum(s*c)%2 != yfinal[i]:
+                assert False, 'Wrong solution'
+            
 
     print(Afinal)
     print(yfinal)
+    print('swap\t',swap_history)
     sol_list_new = enumerate_solution(Afinal, yfinal)
+
+    print('marginals init:\t\t', np.mean(np.vstack(sol_list),axis=0))
+    print('marginals final:\t\t', np.mean(np.vstack(sol_list_new),axis=0))
 
     #exit()
 
@@ -186,6 +203,7 @@ def main():
     #exit()
     #sol_list_new = check_all_solution(Anew, ynew)
     print("Number of solutions:", len(sol_list_new))
+    #print("here")
     #print(swap_history)
     for i, s in enumerate(sol_list_new):
         swap_back(s, swap_history)
