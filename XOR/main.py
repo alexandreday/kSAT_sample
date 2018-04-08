@@ -121,9 +121,10 @@ def enumerate_solution(Areduce, y_):
     all_sol = []
     N_check = 2**(N_free+free_add)
 
-    for i in range(N_check):
+    for i in range(N_check): # does not always work, if a column is full of zeros
         xsol = np.zeros(N,dtype=int)
         xsol[-N_free:] = b2_array(i)
+        is_sol = True
         for i in reversed(range(M)):
             if np.sum(A[i,:]*xsol) % 2 == y[i]:
                 bit = 0
@@ -133,10 +134,14 @@ def enumerate_solution(Areduce, y_):
             if A[i,i] == 1:
                 xsol[i] = bit
             else:
-                xsol[i] = (bit+1)%2
+                if bit == 1:
+                    is_sol = False
+                # cannot be a solution ... 
+                xsol[i] = (bit+1)%2 # two possible solutions
 
-        all_sol.append(xsol)
-
+        if is_sol:
+            all_sol.append(xsol)
+        
     return all_sol
 
 def swap_back(sol, swap_history):
@@ -175,19 +180,20 @@ def main():
     print(ynew)
     Afinal, yfinal = make_diag(Anew, ynew)
     sol_list_new = enumerate_solution(Afinal, yfinal)
-    
-    print(sol_list_new[2])
+    print(sol_list_new)
+    #exit()
+    #exit()
+    #print(sol_list_new[2])
     print(Afinal)
     print(yfinal)
-    exit()
+    #exit()
     for n,s in enumerate(sol_list_new):
-        print(n)
+        #print(n)
         for i,c in enumerate(Afinal):
-            print(i)
+            #print(i)
             if np.sum(s*c)%2 != yfinal[i]:
-                assert False, 'Wrong solution'
-            
-
+                assert False, 'Wrong solution'      
+    #exit()
     print(Afinal)
     print(yfinal)
     print('swap\t',swap_history)
