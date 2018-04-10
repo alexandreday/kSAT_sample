@@ -40,7 +40,6 @@ def make_UT(A_, y_):
         The permutations to do on the original index (x1,x2,x3, etc.) to retrive the original basis.
     """
 
-
     col_swap = []
     A = np.copy(A_)
     y = np.copy(y_)
@@ -151,6 +150,7 @@ def swap_back(sol, swap_history):
         swap(sol, p1, p2)
 
 def main():
+    
     from xor import generate_sparse
 
     N = 8
@@ -196,7 +196,7 @@ def main():
     #exit()
     print(Afinal)
     print(yfinal)
-    print('swap\t',swap_history)
+    print('swap\t', swap_history)
     sol_list_new = enumerate_solution(Afinal, yfinal)
 
     print('marginals init:\t\t', np.mean(np.vstack(sol_list),axis=0))
