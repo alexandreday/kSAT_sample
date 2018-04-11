@@ -1,7 +1,6 @@
 import numpy as np
-from scipy.sparse import coo_matrix, csc_matrix
 
-def check_solution(A, y, sol):
+def verify_solution(A, y, sol):
     nclause = A.shape[0]
     for i in range(nclause):
         if np.sum(A[i, :] * sol) % 2 != y[i]:
@@ -80,163 +79,91 @@ def solve_ES(A, y):
             sol_list.append(sol)
     return sol_list
 
-        
-def enumerate_solution(Areduce, y_):
-    """ This is exponential in the number of free variables, which is of order O(2^(M-N)) 
-    """
-    y = y_
-    test = np.sum(Areduce, axis = 1)
-    pos_no_constraint = (test == 0)
-    if np.count_nonzero(y[pos_no_constraint] == 1) > 0:
-        return []
-    else:
-        #print('removing :\t'
-        A = Areduce[pos_no_constraint == False] # remove no constraint lines !
-        y = y_[pos_no_constraint == False]
-
-    M, N = A.shape
-    N_free = N-M
-    N_check = 2**N_free
-    
-    all_sol = []
-    N_check = 2**(N_free)
-    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
-    
-    for i in range(2**N_free): # does not always work, if a column is full of zeros
-        xsol = np.zeros(N, dtype=int)
-    
-        xsol[-N_free:] = b2_array(i) # error here.
-        is_sol = True
-        for i in reversed(range(M)):
-            if np.sum(A[i,:]*xsol) % 2 == y[i]:
-                bit = 0
-            else:
-                bit = 1
-
-            if A[i,i] == 1:
-                xsol[i] = bit
-            else:
-                if bit == 1: # no way to satisfy with any value here
-                    is_sol = False
-                else: # can take any value !
-                    xsol[i] = -1 # star variable !
-
-        if is_sol:
-            pos_star = np.where(xsol == -1)[0]
-            n_star = len(pos_star)# counts the number of unfrozen variables
-            #print('number of star variable\t:%i'%n_star)
-            b2_array_spec = lambda n10 : np.array(list(np.binary_repr(n10, width=n_star)), dtype=np.int)
-            if n_star > 0:
-                for iii in range(2**n_star):
-                    tmp = b2_array_spec(iii)
-                    for jjj,v in enumerate(tmp):
-                        xsol[pos_star[jjj]] = tmp[jjj]
-                    all_sol.append(np.copy(xsol))
-            else:
-                all_sol.append(np.copy(xsol))
-    
-    return all_sol
-
-def swap_back(sol, swap_history):
-    nswap = len(swap_history)
-    for s in sol:
-        for i in range(nswap):
-            p1, p2 = swap_history[-(i+1)]
-            swap(s, p1, p2)
-
-def solve_GE(A, y):
-    """ Solver using Gaussian elimination and enumerating free variables """
-    Anew, ynew, swap_history = make_UT(A, y)
-    Afinal, yfinal = make_diag(Anew, ynew)
-    print(Afinal)
-    return enumerate_solution(Afinal, yfinal), swap_history
-
 def marginals(solution_set): # unique variable marginals
     if len(solution_set) > 0:
         return np.mean(solution_set, axis=0)
     else:
         []
 
-
-def enumerate_solution_v2(A, y):
+def enumerate_solution_GE(A, y):
     """ A has to be in a reduced form """
     M, N = A.shape
     
     pivots = np.where(np.diagonal(A) == 1)[0] # pivots are identified
+    none_pivots = np.setdiff1d(np.arange(N), pivots)
+    none_pivots_2 = np.setdiff1d(np.arange(M), pivots)
+
     rank = len(pivots) # matrix rank
+    print(rank)
     max_pivot = pivots[-1] 
     xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
 
-    N_free = N - max_pivot -1
-
+    N_free = N - rank # upper bound on number of log of number of solutions (but may be fewer !)
+ 
     b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
     all_sol = []
 
-    for i in range(2**N_free): # here this could simply be replaced by some uniform sampling
+    pivot_set = set(list(pivots))
 
+    for i in range(2**N_free): # HERE REPLACE BY SAMPLING, THIS THE SPACE WE WISH TO SAMPLE !
+        is_sol = False
         xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
-        xsol[-N_free:] = b2_array(i)
-        y_res = np.remainder(np.dot(A[:,-N_free:],xsol[-N_free:].T) + y, 2)
-    
-        is_sol = True
-        for j in reversed(range(M)):
-            if j > max_pivot:
-                if y_res[j] == 1:
-                    is_sol = False
-                    break # not a solution
-            else:
-                if A[j,j] == 1:
-                    xsol[j] = y_res[j]
-                else:
-                    if y_res[j] == 1:
-                        is_sol = False
-                        break # not a solution
+        xsol[none_pivots] = b2_array(i)
+        y_res = np.remainder(np.dot(A[:,none_pivots], xsol[none_pivots].T) + y, 2)
+
+        if np.count_nonzero(y_res[none_pivots_2] == 1) == 0:
+            xsol[pivots] = y_res[pivots]
+            is_sol = True
         if is_sol:
             all_sol.append(xsol)
         
     return all_sol
 
-
 def main():
+    import time
+
+    t_all = []
+    t_me = []
     from xor import generate_sparse
-    N = 8
-    M = 6
+    N = 200
+    M = 200
     K = 3
     n_col = N
     n_row = M
-    np.random.seed(30)
-    for i in range(1000):
-        print(i)
+    np.random.seed(93)
+    for i in range(100):
+        #print(i)
         A, f = generate_sparse(N=N, M=M, K=K)
         y = np.random.randint(0, 2, n_row)
-        sol_init = solve_ES(A, y)
 
+        t = time.time()
+        #sol_init = solve_ES(A, y)
+        t_all.append(time.time()-t)
+
+        t = time.time()
         make_diagonal(A, y)
         sol_final = enumerate_solution_v2(A, y)
+        print(len(sol_final))
+        t_me.append(time.time()-t)
 
-        if len(sol_final)>0:
-            n_star = np.count_nonzero(sol_final[0] == -1)
+    exit()
 
-        assert len(sol_init) == len(sol_final)*2**n_star
+    if len(sol_final)>0:
+        n_star = np.count_nonzero(sol_final[0] == -1)
 
-        if i == 9:
-            print(A)
-            print(y)
-            print(sol_init)
-            print(sol_final)
-            print(marginals(sol_final))
-            print(marginals(sol_init))
-            exit()
+    assert len(sol_init) == len(sol_final)*2**n_star
 
-        if len(sol_init) > 0:
-            marg_final = marginals(sol_final)
-            marg_final[marg_final < -0.0001] = 0.5 # star variables
-            if abs(np.linalg.norm(marginals(sol_init) - marg_final)) > 1e-5:
-                print(i)
-                assert False
+    if len(sol_init) > 0:
+        marg_final = marginals(sol_final)
+        marg_final[marg_final < -0.0001] = 0.5 # star variables
+        if abs(np.linalg.norm(marginals(sol_init) - marg_final)) > 1e-5:
+            print(i)
+            assert False
         #print(marginals(sol_init))
         #print(marginals(sol_final))
 
+    print('all:', np.mean(t_all)) # this scales like 2^N_variable
+    print('me:', np.mean(t_me)) 
     exit()
 
     for i in range(200):
