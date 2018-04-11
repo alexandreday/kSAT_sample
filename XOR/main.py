@@ -3,12 +3,10 @@ from scipy.sparse import coo_matrix, csc_matrix
 
 def check_solution(A, y, sol):
     nclause = A.shape[0]
-    is_solution = True
     for i in range(nclause):
         if np.sum(A[i, :] * sol) % 2 != y[i]:
-            is_solution = False
-            break
-    return is_solution
+            return False
+    return True
 
 def swap_rows(A, ri, rj):
     tmp = np.copy(A[ri, :]) # careful when slicing, will return a view
@@ -20,15 +18,11 @@ def swap(y, i, j):
     y[i] = y[j]
     y[j] = tmp
 
-def swap_columns(A, ci, cj):
-    tmp = np.copy(A[:, ci]) # careful when slicing, will return a view
-    A[:, ci] = A[:, cj]
-    A[:, cj] = tmp
-
 def add_to_row(A, ri, rj): # A[ri, :] <- A[ri, :] + A[rj, :]
     A[ri, :] = A[ri, :] + A[rj, :]
 
 def make_diagonal(A_, y_, copy=False):
+    """ This reduction is unique """ 
     if copy:
         A=np.copy(A_)
         y=np.copy(y_)
@@ -55,76 +49,25 @@ def make_diagonal(A_, y_, copy=False):
                         A[i, :] += A[j, :] # mod 2
                         A[i, :] = np.remainder(A[i, :], 2)
                         y[i] = (y[j] + y[i])%2 # mod 2
+
+    remove_one_UT(A, y)
+
     return A, y
+
+def remove_one_UT(A, y):
+    """Removes the non-zero elements in the upper-triangular part using the pivots"""
+    pivot = find_pivot(A)
+    for j in pivot:
+        pos_one = np.where(A[:, j] == 1)[0]
+        for i in pos_one:
+            if i < j:
+                A[i, :] += A[j, :]  # mod 2
+                A[i, :] = np.remainder(A[i, :], 2)
+                y[i] = (y[i] + y[j]) % 2  # mod 2
 
 def find_pivot(A_UT):
     return np.where(np.diagonal(A_UT) == 1)[0]
 
-def make_UT(A_, y_):
-    """ Transforms A_ into a upper triangular matrix (where A.x == y) is a linear system of
-    equations in base 2. 
-
-    Returns
-    -------
-    (A, y, swap_history) : tuple
-        A in the UT form
-        the equivalent y associated with the new A
-        The permutations to do on the original index (x1,x2,x3, etc.) to retrive the original basis.
-    """
-
-    col_swap = []
-    A = np.copy(A_)
-    y = np.copy(y_)
-
-    nr, nc = A.shape
-    
-    for j in range(nc):
-        if j < nr:
-            #A.get_first_index_non_zero(col = j)
-            pos = np.where(A[:,j] == 1)[0]
-
-            if len(pos) > 0: # there are non-zero elements in this column
-                if A[j,j] == 0: # diagonal element is zero -> need pivot to be 1
-                    if pos[-1] > j:
-                        swap_rows(A, j, pos[-1])
-                        swap(y, j, pos[-1])
-                        pos = pos[:-1] 
-                    else: # already UT !
-                        pos = []
-                        pos_row = np.where(A[j,:] == 1)[0]
-                        if len(pos_row) > 0:
-                            swap_columns(A, j, pos_row[0])
-                            col_swap.append([j, pos_row[0]])
-                            pos = np.where(A[:,j] == 1)[0]
-                            #swap(y, j, pos_row[0])                        
-                for p in pos:
-                    if p > j: # making elements zero => and only working with lower triangle
-                        add_to_row(A, p, j)
-                        y[p] += y[j]
-            A = np.remainder(A, 2)
-            y = np.remainder(y, 2)
-
-    return A, y, col_swap # do we care about this => maybe, maybe not.
-
-def make_diag(A_, y_):
-    A = np.copy(A_)
-    y = np.copy(y_)
-    M, N = A.shape
-    # starting from last row, reduce:
-    for i in reversed(range(M)):
-        #print(i)
-        if A[i,i] == 1:
-            pos = np.where(A[:,i] == 1)[0]
-            for r in pos:
-                if r < i:
-                    A[r, :] -= A[i, :]
-                    y[r] -= y[i]
-
-        A = np.remainder(A, 2)
-        y = np.remainder(y, 2)
-
-    return A, y
-        
 def solve_ES(A, y):
     """ Solver using exhaustive search of all configurations """
     nvar = A.shape[1]
@@ -230,10 +173,10 @@ def main():
         #print(A)
         make_diagonal(A, y)
     
-        print(A)
-        print(find_pivot(A))
+        #print(A)
+        #print(find_pivot(A))
         
-        exit()
+        #exit()
 
         sol_final = solve_ES(A, y)
 
@@ -241,7 +184,7 @@ def main():
 
         if len(sol_init) > 0:
             if abs(np.linalg.norm(marginals(sol_init) - marginals(sol_final))) > 1e-5:
-                print(i)
+                assert False
         #print(marginals(sol_init))
         #print(marginals(sol_final))
 
