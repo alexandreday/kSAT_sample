@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 def verify_solution(A, y, sol):
     nclause = A.shape[0]
@@ -94,8 +95,6 @@ def enumerate_solution_GE(A, y):
     none_pivots_2 = np.setdiff1d(np.arange(M), pivots)
 
     rank = len(pivots) # matrix rank
-    print(rank)
-    max_pivot = pivots[-1] 
     xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
 
     N_free = N - rank # upper bound on number of log of number of solutions (but may be fewer !)
@@ -119,15 +118,66 @@ def enumerate_solution_GE(A, y):
         
     return all_sol
 
+def sample_solution_GE(A, y, n_sample=10, time_max = 86400):
+    """ A has to be in a reduced form """
+    M, N = A.shape
+    t_init = time.time()
+    
+    pivots = np.where(np.diagonal(A) == 1)[0] # pivots are identified
+    none_pivots = np.setdiff1d(np.arange(N), pivots)
+    none_pivots_2 = np.setdiff1d(np.arange(M), pivots)
+
+    rank = len(pivots) # matrix rank
+    xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
+
+    N_free = N - rank # upper bound on number of log of number of solutions (but may be fewer !)
+ 
+    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
+
+    pivot_set = set(list(pivots))
+
+    if n_sample > 2**N_free:
+        assert False, "Make sure you don't ask for too many samples !"
+    else:
+        all_sol = []        
+        while len(all_sol) < n_sample:
+            print(len(all_sol))
+            is_sol = False
+            xsol = -1*np.ones(N, dtype=int)
+            xsol[none_pivots] = np.random.randint(0, 2, N_free)
+            y_res = np.remainder(np.dot(A[:,none_pivots], xsol[none_pivots].T) + y, 2)
+
+            if np.count_nonzero(y_res[none_pivots_2] == 1) == 0:
+                xsol[pivots] = y_res[pivots]
+                is_sol = True
+            if is_sol:
+                all_sol.append(xsol)
+            if time.time() - t_init > time_max:
+                break
+
+                
+    return all_sol
+
 def main():
     import time
 
     t_all = []
     t_me = []
     from xor import generate_sparse
-    N = 200
-    M = 200
+    N = 100 # number of literals / variables
+    M = 25 # number of constraints
     K = 3
+    A, f = generate_sparse(N=N, M=M, K=K)
+    y = np.random.randint(0, 2, M) # random constraints
+
+    make_diagonal(A, y)
+    #print(A)
+    sol = sample_solution_GE(A, y, n_sample=50)
+
+    print(sol)
+    exit()
+
+
     n_col = N
     n_row = M
     np.random.seed(93)
