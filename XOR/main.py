@@ -28,6 +28,40 @@ def swap_columns(A, ci, cj):
 def add_to_row(A, ri, rj): # A[ri, :] <- A[ri, :] + A[rj, :]
     A[ri, :] = A[ri, :] + A[rj, :]
 
+def make_diagonal(A_, y_, copy=False):
+    if copy:
+        A=np.copy(A_)
+        y=np.copy(y_)
+    else:
+        A = A_
+        y = y_
+    
+    #1 clean up zero columns ? (no !)
+    M, N = A.shape
+    for j in range(M): # enumerate over columns
+        #print(j)
+        pos_one = np.where(A[:, j] == 1)[0]
+        if len(pos_one) > 0:
+            while True:
+                if A[j,j] == 1:
+                    for i in pos_one:
+                        if i > j:
+                            A[i, :] += A[j, :] # mod 2
+                            A[i, :] = np.remainder(A[i, :], 2)
+                            y[i] = (y[j] + y[i])%2 # mod 2
+                    break
+                else:
+                    if np.count_nonzero(pos_one > j) == 0:
+                        break
+                    for i in pos_one:
+                        if i > j:
+                            swap_rows(A, j, pos_one[0])
+                            swap(y, j, pos_one[0])
+                            break
+    return A, y
+
+
+
 def make_UT(A_, y_):
     """ Transforms A_ into a upper triangular matrix (where A.x == y) is a linear system of
     equations in base 2. 
@@ -93,7 +127,8 @@ def make_diag(A_, y_):
 
     return A, y
         
-def check_all_solution(A, y):
+def solve_ES(A, y):
+    """ Solver using exhaustive search of all configurations """
     nvar = A.shape[1]
     nsol = 2**nvar
     b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=nvar)), dtype=np.int)
@@ -105,24 +140,31 @@ def check_all_solution(A, y):
     return sol_list
 
 def enumerate_solution(Areduce, y_):
-    A = np.copy(Areduce)
-    y = np.copy(y_)
-    M, N = Areduce.shape
+    """ This is exponential in the number of free variables, which is of order O(2^(M-N)) 
+    """
+
+    y = y_
+    test = np.sum(Areduce, axis = 1)
+    pos_no_constraint = (test == 0)
+    if np.count_nonzero(y[pos_no_constraint] == 1) > 0:
+        return []
+    else:
+        #print('removing :\t'
+        A = Areduce[pos_no_constraint == False] # remove no constraint lines !
+        y = y_[pos_no_constraint == False]
+
+    M, N = A.shape
     N_free = N-M
     N_check = 2**N_free
-    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
-
-    test = np.sum(A, axis = 1)
-    free_add = np.count_nonzero(y[test == 0] == 0)
-    if np.count_nonzero(y[test == 0] == 1) > 0:
-        return []
     
     all_sol = []
-    N_check = 2**(N_free+free_add)
-
-    for i in range(N_check): # does not always work, if a column is full of zeros
-        xsol = np.zeros(N,dtype=int)
-        xsol[-N_free:] = b2_array(i)
+    N_check = 2**(N_free)
+    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
+    
+    for i in range(2**N_free): # does not always work, if a column is full of zeros
+        xsol = np.zeros(N, dtype=int)
+    
+        xsol[-N_free:] = b2_array(i) # error here.
         is_sol = True
         for i in reversed(range(M)):
             if np.sum(A[i,:]*xsol) % 2 == y[i]:
@@ -133,39 +175,102 @@ def enumerate_solution(Areduce, y_):
             if A[i,i] == 1:
                 xsol[i] = bit
             else:
-                if bit == 1:
+                if bit == 1: # no way to satisfy with any value here
                     is_sol = False
-                # cannot be a solution ... 
-                xsol[i] = (bit+1)%2 # two possible solutions
+                else: # can take any value !
+                    xsol[i] = -1 # star variable !
 
         if is_sol:
-            all_sol.append(xsol)
-        
+            pos_star = np.where(xsol == -1)[0]
+            n_star = len(pos_star)# counts the number of unfrozen variables
+            #print('number of star variable\t:%i'%n_star)
+            b2_array_spec = lambda n10 : np.array(list(np.binary_repr(n10, width=n_star)), dtype=np.int)
+            if n_star > 0:
+                for iii in range(2**n_star):
+                    tmp = b2_array_spec(iii)
+                    for jjj,v in enumerate(tmp):
+                        xsol[pos_star[jjj]] = tmp[jjj]
+                    all_sol.append(np.copy(xsol))
+            else:
+                all_sol.append(np.copy(xsol))
+    
     return all_sol
 
 def swap_back(sol, swap_history):
     nswap = len(swap_history)
-    for i in range(nswap):
-        p1, p2 = swap_history[-(i+1)]
-        swap(sol, p1, p2)
+    for s in sol:
+        for i in range(nswap):
+            p1, p2 = swap_history[-(i+1)]
+            swap(s, p1, p2)
+
+def solve_GE(A, y):
+    """ Solver using Gaussian elimination and enumerating free variables """
+    Anew, ynew, swap_history = make_UT(A, y)
+    Afinal, yfinal = make_diag(Anew, ynew)
+    print(Afinal)
+    return enumerate_solution(Afinal, yfinal), swap_history
+
+def marginals(solution_set): # unique variable marginals
+    return np.mean(solution_set, axis=0)
 
 def main():
-    
     from xor import generate_sparse
-
     N = 8
     M = 6
     K = 3
     n_col = N
     n_row = M
-    np.random.seed(5)
-    A, f = generate_sparse(N=N, M=M, K=K)
-    y = np.random.randint(0, 2, n_row)
-    sol_list = check_all_solution(A, y)
-    print('marginals:\t', np.mean(np.vstack(sol_list),axis=0))
+    np.random.seed(11)
 
-    #print(np.sum(A,axis=1))
-    #exit()
+    for i in range(1000):
+        print(i)
+        A, f = generate_sparse(N=N, M=M, K=K)
+        y = np.random.randint(0, 2, n_row)
+
+        sol_init = solve_ES(A, y)
+        make_diagonal(A, y)
+
+        sol_final = solve_ES(A, y)
+
+        assert len(sol_init) == len(sol_final)
+
+        if len(sol_init) > 0:
+            if abs(np.linalg.norm(marginals(sol_init) - marginals(sol_final))) > 1e-5:
+                print(i)
+        #print(marginals(sol_init))
+        #print(marginals(sol_final))
+
+    exit()
+
+    for i in range(200):
+    
+
+
+
+        
+        print(i)
+        A, f = generate_sparse(N=N, M=M, K=K)
+        y = np.random.randint(0, 2, n_row)
+
+        if i == 16:
+            print(A)
+            print(y)
+            #exit()
+
+            sol_ES = solve_ES(A, y)
+            sol_GE, swap_hist = solve_GE(A, y)
+        #if i==16:
+            print(sol_ES)
+            print(sol_GE)
+            exit()
+
+            swap_back(sol_GE, swap_hist)
+            diff = np.linalg.norm(marginals(sol_GE)-marginals(sol_ES))
+            if abs(diff) > 1e-10:
+                print(i)
+
+    exit()
+
     print(A)
     print('col sum:\t',np.sum(A,axis=0))
     print(y)
@@ -179,8 +284,14 @@ def main():
     print(Anew)
     print(ynew)
     Afinal, yfinal = make_diag(Anew, ynew)
+
+    print(Afinal)
+    print(yfinal)
     sol_list_new = enumerate_solution(Afinal, yfinal)
+    #print(len(sol_list_new))
+    #exit()
     print(sol_list_new)
+    #exit()
     #exit()
     #exit()
     #print(sol_list_new[2])
@@ -188,6 +299,7 @@ def main():
     print(yfinal)
     #exit()
     for n,s in enumerate(sol_list_new):
+
         #print(n)
         for i,c in enumerate(Afinal):
             #print(i)
@@ -199,8 +311,14 @@ def main():
     print('swap\t', swap_history)
     sol_list_new = enumerate_solution(Afinal, yfinal)
 
-    print('marginals init:\t\t', np.mean(np.vstack(sol_list),axis=0))
-    print('marginals final:\t\t', np.mean(np.vstack(sol_list_new),axis=0))
+    print('exact # of solutions =',len(sol_list))
+    print('GE # of solutions =',len(sol_list_new))
+    if len(sol_list) > 0:
+        print('marginals init :\t\t', np.mean(np.vstack(sol_list),axis=0))
+    if len(sol_list_new) > 0:
+        swap_back(sol_list_new, swap_history)
+        print('marginals final:\t\t', np.mean(np.vstack(sol_list_new),axis=0))
+    exit()
 
     #exit()
 
