@@ -42,25 +42,23 @@ def make_diagonal(A_, y_, copy=False):
         #print(j)
         pos_one = np.where(A[:, j] == 1)[0]
         if len(pos_one) > 0:
-            while True:
-                if A[j,j] == 1:
-                    for i in pos_one:
-                        if i > j:
-                            A[i, :] += A[j, :] # mod 2
-                            A[i, :] = np.remainder(A[i, :], 2)
-                            y[i] = (y[j] + y[i])%2 # mod 2
-                    break
-                else:
-                    if np.count_nonzero(pos_one > j) == 0:
-                        break
-                    for i in pos_one:
-                        if i > j:
-                            swap_rows(A, j, pos_one[0])
-                            swap(y, j, pos_one[0])
-                            break
+            pos_one_swap = pos_one[(pos_one > j)] # can only swap with rows below j.
+            if len(pos_one_swap) != 0:
+                
+                if A[j,j] == 0:
+                    swap_rows(A, j, pos_one_swap[0])
+                    swap(y, j, pos_one_swap[0])
+
+                pos_one = np.where(A[:, j] == 1)[0]
+                for i in pos_one:
+                    if i > j:
+                        A[i, :] += A[j, :] # mod 2
+                        A[i, :] = np.remainder(A[i, :], 2)
+                        y[i] = (y[j] + y[i])%2 # mod 2
     return A, y
 
-
+def find_pivot(A_UT):
+    return np.where(np.diagonal(A_UT) == 1)[0]
 
 def make_UT(A_, y_):
     """ Transforms A_ into a upper triangular matrix (where A.x == y) is a linear system of
@@ -228,7 +226,14 @@ def main():
         y = np.random.randint(0, 2, n_row)
 
         sol_init = solve_ES(A, y)
+        
+        #print(A)
         make_diagonal(A, y)
+    
+        print(A)
+        print(find_pivot(A))
+        
+        exit()
 
         sol_final = solve_ES(A, y)
 
@@ -244,10 +249,6 @@ def main():
 
     for i in range(200):
     
-
-
-
-        
         print(i)
         A, f = generate_sparse(N=N, M=M, K=K)
         y = np.random.randint(0, 2, n_row)
@@ -415,49 +416,6 @@ def solve(A, y):
     return
 # define sparse matrix class for bool operations ... we want row add, swaps etc.
 # do no store zeros ....
-
-class SparseBool:
-
-    def __init__(self):
-        print('etc. etc.')
-    
-def mod2_data(data):
-    return [list(list(np.array(data[0],dtype=np.int8) %2))]
-
-def swap_diagonal(A, j):
-    i = find_pivot(A,j)
-    swap_rows(A,i,j)
-
-def find_pivot(A, j):
-    # looks for the first non-zero in column j starting from the bottom
-    # returns the row index of that element
-    return A[j:,j].tocoo().row[-1]
-
-""" def swap_rows(A, i, j):
-    tmp = np.copy(A[i,:])
-    A[i,:] = A[j,:]
-    A[j,:] = tmp
- """
-def construct_formula(N, alpha, p = 3): # 3-XORSAT
-    M=int(alpha*N)
-    y = np.random.randint(0,2,size=M)
-
-    A = []
-    while len(A) < M:
-        c = np.random.randint(0,N,p)
-        if len(np.unique(c)) == p:
-            A.append(c)
-
-    idx_1 = []
-    idx_2 = []
-    for i, c in enumerate(A):
-        for j, v in enumerate(c):
-            idx_1.append(i)
-            idx_2.append(v)
-    data = np.ones(len(idx_2))
-    C = coo_matrix((data,(idx_1,idx_2)), dtype=np.int8, shape=(len(A),N))
-
-    return y, C.tolil()
 
 if __name__ == "__main__":
     main()
