@@ -80,10 +80,10 @@ def solve_ES(A, y):
             sol_list.append(sol)
     return sol_list
 
+        
 def enumerate_solution(Areduce, y_):
     """ This is exponential in the number of free variables, which is of order O(2^(M-N)) 
     """
-
     y = y_
     test = np.sum(Areduce, axis = 1)
     pos_no_constraint = (test == 0)
@@ -152,7 +152,50 @@ def solve_GE(A, y):
     return enumerate_solution(Afinal, yfinal), swap_history
 
 def marginals(solution_set): # unique variable marginals
-    return np.mean(solution_set, axis=0)
+    if len(solution_set) > 0:
+        return np.mean(solution_set, axis=0)
+    else:
+        []
+
+
+def enumerate_solution_v2(A, y):
+    """ A has to be in a reduced form """
+    M, N = A.shape
+    
+    pivots = np.where(np.diagonal(A) == 1)[0] # pivots are identified
+    rank = len(pivots) # matrix rank
+    max_pivot = pivots[-1] 
+    xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
+
+    N_free = N - max_pivot -1
+
+    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
+    all_sol = []
+
+    for i in range(2**N_free): # here this could simply be replaced by some uniform sampling
+
+        xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
+        xsol[-N_free:] = b2_array(i)
+        y_res = np.remainder(np.dot(A[:,-N_free:],xsol[-N_free:].T) + y, 2)
+    
+        is_sol = True
+        for j in reversed(range(M)):
+            if j > max_pivot:
+                if y_res[j] == 1:
+                    is_sol = False
+                    break # not a solution
+            else:
+                if A[j,j] == 1:
+                    xsol[j] = y_res[j]
+                else:
+                    if y_res[j] == 1:
+                        is_sol = False
+                        break # not a solution
+        if is_sol:
+            all_sol.append(xsol)
+        
+    return all_sol
+
 
 def main():
     from xor import generate_sparse
@@ -161,29 +204,35 @@ def main():
     K = 3
     n_col = N
     n_row = M
-    np.random.seed(11)
-
+    np.random.seed(30)
     for i in range(1000):
         print(i)
         A, f = generate_sparse(N=N, M=M, K=K)
         y = np.random.randint(0, 2, n_row)
-
         sol_init = solve_ES(A, y)
-        
-        #print(A)
+
         make_diagonal(A, y)
-    
-        #print(A)
-        #print(find_pivot(A))
-        
-        #exit()
+        sol_final = enumerate_solution_v2(A, y)
 
-        sol_final = solve_ES(A, y)
+        if len(sol_final)>0:
+            n_star = np.count_nonzero(sol_final[0] == -1)
 
-        assert len(sol_init) == len(sol_final)
+        assert len(sol_init) == len(sol_final)*2**n_star
+
+        if i == 9:
+            print(A)
+            print(y)
+            print(sol_init)
+            print(sol_final)
+            print(marginals(sol_final))
+            print(marginals(sol_init))
+            exit()
 
         if len(sol_init) > 0:
-            if abs(np.linalg.norm(marginals(sol_init) - marginals(sol_final))) > 1e-5:
+            marg_final = marginals(sol_final)
+            marg_final[marg_final < -0.0001] = 0.5 # star variables
+            if abs(np.linalg.norm(marginals(sol_init) - marg_final)) > 1e-5:
+                print(i)
                 assert False
         #print(marginals(sol_init))
         #print(marginals(sol_final))
