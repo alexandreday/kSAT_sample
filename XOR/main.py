@@ -1,5 +1,39 @@
 import numpy as np
 import time
+import pickle
+from collections import Counter
+
+def sample_tuple(N, K): # sample tuple uniformly at random
+    trace = []
+    tup = []
+    for i in range(K):
+        pos = np.random.randint(0, N-i)
+        value = pos
+        for t in reversed(trace): # iterate from last element
+            if value > t-1:
+                value +=1
+        tup.append(value)
+        trace.append(pos)#print(trace)
+    tup.sort()
+    return tup
+
+def generate_XOR_formula(N=10, M=10, K=3):
+    """ generates a XORSAT formula
+    """
+    formula = set([])
+
+    while len(formula) < M:
+        tup = tuple(sample_tuple(N, K))
+        formula.add(tup)
+    return formula
+
+def generate_sparse(N=10,M=10,K=3):
+    formula = generate_XOR_formula(N,M,K)
+    A = np.zeros((M,N),dtype=int)
+    for i, clause in enumerate(formula):
+        for literal in clause:
+            A[i, literal]=1
+    return A, formula
 
 def verify_solution(A, y, sol):
     nclause = A.shape[0]
@@ -126,9 +160,8 @@ def is_SAT(A, y):
     tmp = np.sum(A, axis=1)
     return np.count_nonzero(y[tmp == 0] == 1) == 0 
 
-def sample_solution_GE(A, y, pivot_ls, n_sample=10):
-    """ WALKSAT on the set of clauses that do not contain pivots followed by fixing clauses
-    with pivots. Note that A has to begin in a reduced form.
+def sample_solution_GE(A, y, pivot_ls):
+    """ A is in row-echelon form with pivot position provided in pivot_ls
     """
     M, N = A.shape
     t_init = time.time()
@@ -145,19 +178,79 @@ def sample_solution_GE(A, y, pivot_ls, n_sample=10):
     
     return xsol
 
-def main():
-    import time
-    from xor import generate_sparse
+class XOR_SOLVE:
 
-    N = 1000 # number of literals / variables
-    M = 910 # number of constraints
-    K = 3
-    n_sample = 100
-    A, f = generate_sparse(N=N, M=M, K=K)
-    y = np.random.randint(0, 2, M) # random constraints
-    pivots = make_diagonal(A, y)
+    def __init__(self, N=100, M=80, K=3, save_formula=True):
+        self.N = N
+        self.M = M
+        self.K = K
+        self.A, self.f = generate_sparse(N, M, K)
+        file_name = 'formula_N=%i_M=%i_K=%i.pkl'%(N,M,K)
 
+        if save_formula:
+            pickle.dump(self.f, open(file_name,'wb'))
+
+        self.y = np.random.randint(0, 2, M) # random constraints
+        self.is_reduced = False
     
+    def reduce_system(self):
+        self.pivots = make_diagonal(self.A, self.y)
+        self.is_reduced = True
+    
+    def entropy(self):
+        return (self.N - len(self.pivots))/self.N
+
+    def SAT(self):
+        if not self.is_reduced:
+            self.reduce_system()
+        return is_SAT(self.A, self.y)
+    
+    def sample_solution(self, n_sample = 10, verbose = 0):
+        
+        if not self.is_reduced:
+            self.reduce_system()
+        if self.SAT() is False:
+            print("No SOLUTION")
+            return []
+
+        x_sample_solution = []
+        for i in range(n_sample):
+            if verbose != 0:
+                if i % 500 == 0:
+                    print(i)
+            x_sample_solution.append(sample_solution_GE(self.A, self.y, self.pivots))
+
+        return x_sample_solution
+    
+    def check_solution(self, x):
+        return verify_solution(self.A, self.y, x)
+
+def main():
+
+    alpha = np.arange(0.5, 1.001, 0.01)
+    N=1000
+    K=3
+    time_vs_alpha = []
+    entropy_vs_alpha= []
+
+
+    for a in alpha:
+        print('alpha = %.3f'%a)
+        M = int(a*N)
+        xor = XOR_SOLVE(N, M, K, save_formula = True)
+        t_start= time.time()
+        X = xor.sample_solution(10000, verbose=True)
+        time_vs_alpha.append(time.time() - t_start)
+        entropy_vs_alpha.append(xor.entropy())
+
+        for x in X:
+            assert xor.check_solution(x)
+        save_solution_file = 'solution_N=%i_M=%i_K=%i.pkl'%(N,M,K)
+        pickle.dump(np.packbits(X), open(save_solution_file,'wb'))
+
+    pickle.dump(entropy_vs_alpha, open('entropy_N=%i_M=%i_K=%i.pkl'%(N,M,K),'wb'))
+    pickle.dump(time_vs_alpha, open('time_N=%i_M=%i_K=%i.pkl'%(N,M,K),'wb'))
+
 
 if __name__ == "__main__":
     main()
