@@ -40,67 +40,34 @@ def make_diagonal(A_, y_, copy=False):
         for j in range(i, N):
             pos_one = np.where(A[:,j] == 1)[0]
             if len(pos_one) > 0:
-                pos_one = pos_one[pos_one > (pos_pivot - 1)]
+                pos_one = pos_one[pos_one > (i - 1)]
             if len(pos_one) > 0:
                 if A[i, j] == 0:
                     swap_rows(A, i, pos_one[0])
                     swap(y, i, pos_one[0])
 
-                    for k in pos_one[1:]:
-                        A[i] += A[k] # mod 2
-                        A[i] = np.remainder(A[i], 2)
-                        y[i] = (y[k] + y[i])%2 # mod 2
-
-                pivot_list.append([i,j])
-                pos_pivot +=1
+                pos_one = np.where(A[:,j] == 1)[0]
+                for k in pos_one:
+                    if k > i :
+                        A[k] += A[i] # mod 2
+                        A[k] = np.remainder(A[k], 2)
+                        y[k] = (y[k] + y[i])%2 # mod 2
+                pivot_list.append([i, j])
                 break
 
-                
-            
+    for pivot in reversed(pivot_list):
+        i, j = pivot
+        pos_one = np.where(A[:,j] == 1)[0]
+        pos_one = pos_one[pos_one < i]
+        for k in pos_one:
+            A[k] += A[i] # mod 2
+            A[k] = np.remainder(A[k], 2)
+            y[k] = (y[k] + y[i])%2 # mod 2
 
-
-
-
-
-
-
-    while pos_pivot < M:   
-        pos_one = np.where(A[:, j] == 1)[0]
-
-        if len(pos_one) > 0: # zero column otherwise, don't increase pivot
-            pos_one_swap = pos_one[(pos_one > (pos_pivot - 1))] # can only swap with rows below pos_pivot - 1 (including pivot !)
-            if len(pos_one_swap) != 0: # if non-zero, means pivot exist in that column !
-                
-                
-                if A[pos_pivot, j] == 0: # make pivot one !
-                    swap_rows(A, pos_pivot, pos_one_swap[0])
-                    swap(y, pos_pivot, pos_one_swap[0])
-
-                pos_one = np.where(A[:, j] == 1)[0]
-                for i in pos_one:
-                    if i > pos_pivot:
-                        A[i, :] += A[pos_pivot, :] # mod 2
-                        A[i, :] = np.remainder(A[i, :], 2)
-                        y[i] = (y[pos_pivot] + y[i])%2 # mod 2
-                pivot_list.append([j, pos_pivot])
-                pos_pivot +=1
-
-    #remove_one_UT(A, y)
     if copy is True:
         return A, y, np.array(pivot_list,dtype=int)
     else:
         return np.array(pivot_list,dtype=int)
-
-def remove_one_UT(A, y):
-    """Removes the non-zero elements in the upper-triangular part using the pivots"""
-    pivot = find_pivot(A)
-    for j in pivot:
-        pos_one = np.where(A[:, j] == 1)[0]
-        for i in pos_one:
-            if i < j:
-                A[i, :] += A[j, :]  # mod 2
-                A[i, :] = np.remainder(A[i, :], 2)
-                y[i] = (y[i] + y[j]) % 2  # mod 2
 
 def find_pivot(A_UT):
     return np.where(np.diagonal(A_UT) == 1)[0]
@@ -155,302 +122,42 @@ def enumerate_solution_GE(A, y):
         
     return all_sol
 
-def sample_solution_GE(A, y, n_sample=10, time_max = 86400):
+def is_SAT(A, y):
+    tmp = np.sum(A, axis=1)
+    return np.count_nonzero(y[tmp == 0] == 1) == 0 
+
+def sample_solution_GE(A, y, pivot_ls, n_sample=10):
     """ WALKSAT on the set of clauses that do not contain pivots followed by fixing clauses
     with pivots. Note that A has to begin in a reduced form.
     """
     M, N = A.shape
     t_init = time.time()
-    pos_non_zero = {}
-    for i in range(M):
-        pos_non_zero[i] = np.where(A[i] == 1)[0]
-        if (len(pos_non_zero[i]) == 0) & (y[i] == 1):
-            return [] # no solution !
+    n_pivot = len(pivot_ls)
+    n_free = N - n_pivot
+    pos_pivot = pivot_ls[:,1]
+    none_pivot_pos = np.setdiff1d(np.arange(N), pos_pivot)
+    xsol = np.ones(N,dtype=int)
+
+    xsol[none_pivot_pos] = np.random.randint(0, 2, n_free)
+    for p in reversed(pivot_ls):
+        i, j = p
+        xsol[j]^= (y[i] + np.dot(A[i, :], xsol)) % 2
     
-    pivots = np.where(np.diagonal(A) == 1)[0] # pivots are identified
-    none_pivots = np.setdiff1d(np.arange(N), pivots)
-    none_pivots_2 = np.setdiff1d(np.arange(M), pivots)
-
-    rank = len(pivots) # matrix rank
-    xsol = -1*np.ones(N, dtype=int) # unconstrained variables are marked by a -2
-
-    N_free = N - rank # upper bound on number of log of number of solutions (but may be fewer !)
- 
-    b2_array = lambda n10 : np.array(list(np.binary_repr(n10, width=N_free)), dtype=np.int)
-
-    pivot_set = set(list(pivots))
-
-    if n_sample > 2**N_free:
-        assert False, "Make sure you don't ask for too many samples !"
-    else:
-        all_sol = []        
-        while len(all_sol) < n_sample:
-            for j in reversed(range(M)):
-                pos_z_j = pos_non_zero[j]
-                n_nz_j = len(pos_z_j)
-                if n_nz_j > 1:
-                    xsol[pos_z_j[-(n_nz_j-1):]] = np.random.randint(0, 2, n_nz_j - 1)
-                    xsol[pos_z_j[0]] = (np.sum(xsol*A[j]) + y[j]) % 2
-                elif n_nz_j == 1:
-                    xsol[pos_z_j] = y[j]
-                y_res = np.remainder(np.dot(A[:,none_pivots], xsol[none_pivots].T) + y, 2)
-
-                
-                #n_rando = 
-                xsol[pos_z_j[-1]] = y[j]
-                #for 
-
-
-
-
-            print(len(all_sol))
-            is_sol = False
-            xsol = -1*np.ones(N, dtype=int)
-            xsol[none_pivots] = np.random.randint(0, 2, N_free)
-            y_res = np.remainder(np.dot(A[:,none_pivots], xsol[none_pivots].T) + y, 2)
-
-            if np.count_nonzero(y_res[none_pivots_2] == 1) == 0:
-                xsol[pivots] = y_res[pivots]
-                is_sol = True
-            if is_sol:
-                all_sol.append(xsol)
-            if time.time() - t_init > time_max:
-                break
-
-                
-    return all_sol
+    return xsol
 
 def main():
     import time
-
-    t_all = []
-    t_me = []
     from xor import generate_sparse
-    N = 8 # number of literals / variables
-    M = 4 # number of constraints
+
+    N = 1000 # number of literals / variables
+    M = 910 # number of constraints
     K = 3
+    n_sample = 100
     A, f = generate_sparse(N=N, M=M, K=K)
     y = np.random.randint(0, 2, M) # random constraints
-
     pivots = make_diagonal(A, y)
-    print("PIVOTS:", pivots)
-    print(A)
 
-    print(y)
-    exit()
-    sol = sample_solution_GE(A, y, n_sample=50)
-
-    print(sol)
-    exit()
-
-
-    n_col = N
-    n_row = M
-    np.random.seed(93)
-    for i in range(100):
-        #print(i)
-        A, f = generate_sparse(N=N, M=M, K=K)
-        y = np.random.randint(0, 2, n_row)
-
-        t = time.time()
-        #sol_init = solve_ES(A, y)
-        t_all.append(time.time()-t)
-
-        t = time.time()
-        make_diagonal(A, y)
-        sol_final = enumerate_solution_v2(A, y)
-        print(len(sol_final))
-        t_me.append(time.time()-t)
-
-    exit()
-
-    if len(sol_final)>0:
-        n_star = np.count_nonzero(sol_final[0] == -1)
-
-    assert len(sol_init) == len(sol_final)*2**n_star
-
-    if len(sol_init) > 0:
-        marg_final = marginals(sol_final)
-        marg_final[marg_final < -0.0001] = 0.5 # star variables
-        if abs(np.linalg.norm(marginals(sol_init) - marg_final)) > 1e-5:
-            print(i)
-            assert False
-        #print(marginals(sol_init))
-        #print(marginals(sol_final))
-
-    print('all:', np.mean(t_all)) # this scales like 2^N_variable
-    print('me:', np.mean(t_me)) 
-    exit()
-
-    for i in range(200):
     
-        print(i)
-        A, f = generate_sparse(N=N, M=M, K=K)
-        y = np.random.randint(0, 2, n_row)
-
-        if i == 16:
-            print(A)
-            print(y)
-            #exit()
-
-            sol_ES = solve_ES(A, y)
-            sol_GE, swap_hist = solve_GE(A, y)
-        #if i==16:
-            print(sol_ES)
-            print(sol_GE)
-            exit()
-
-            swap_back(sol_GE, swap_hist)
-            diff = np.linalg.norm(marginals(sol_GE)-marginals(sol_ES))
-            if abs(diff) > 1e-10:
-                print(i)
-
-    exit()
-
-    print(A)
-    print('col sum:\t',np.sum(A,axis=0))
-    print(y)
-    #exit()
-    
-    #print(A)
-    #print(y)   
-    print("Number of solutions original:", len(sol_list))
-    #exit()
-    Anew, ynew, swap_history = make_UT(A, y)
-    print(Anew)
-    print(ynew)
-    Afinal, yfinal = make_diag(Anew, ynew)
-
-    print(Afinal)
-    print(yfinal)
-    sol_list_new = enumerate_solution(Afinal, yfinal)
-    #print(len(sol_list_new))
-    #exit()
-    print(sol_list_new)
-    #exit()
-    #exit()
-    #exit()
-    #print(sol_list_new[2])
-    print(Afinal)
-    print(yfinal)
-    #exit()
-    for n,s in enumerate(sol_list_new):
-
-        #print(n)
-        for i,c in enumerate(Afinal):
-            #print(i)
-            if np.sum(s*c)%2 != yfinal[i]:
-                assert False, 'Wrong solution'      
-    #exit()
-    print(Afinal)
-    print(yfinal)
-    print('swap\t', swap_history)
-    sol_list_new = enumerate_solution(Afinal, yfinal)
-
-    print('exact # of solutions =',len(sol_list))
-    print('GE # of solutions =',len(sol_list_new))
-    if len(sol_list) > 0:
-        print('marginals init :\t\t', np.mean(np.vstack(sol_list),axis=0))
-    if len(sol_list_new) > 0:
-        swap_back(sol_list_new, swap_history)
-        print('marginals final:\t\t', np.mean(np.vstack(sol_list_new),axis=0))
-    exit()
-
-    #exit()
-
-    #print(Anew)
-    #print(ynew)
-    #exit()
-    #sol_list_new = check_all_solution(Anew, ynew)
-    print("Number of solutions:", len(sol_list_new))
-    #print("here")
-    #print(swap_history)
-    for i, s in enumerate(sol_list_new):
-        swap_back(s, swap_history)
-        equiv = False
-        for ss in sol_list:
-            if np.array_equal(s,ss):
-                equiv=True  
-        assert equiv, "NOT EQUIVALENT"
-
-    #print(sol_list_new)
-    #print(sol)
-    exit()
-    for i in range(A.shape[0]):
-        tmp = np.sum(A[i, :] * sol) %2
-        print(tmp == y[i])
-    #print(A)
-    exit()
-    np.random.seed(1)
-    y, A = construct_formula(10, 0.5)
-
-    print(A.toarray())
-    solve(A, y)
-
-    # ----------- > < 
-    # ----------- > <
-    exit()
-    #print(A.toarray())
-    print((True + True) % 2)
-    print(np.array([-1,0,1])%2)
-    exit()
-    tmp = A[0,:].tocoo()
-    print(tmp.data)
-    print(tmp.row)
-    print(tmp.col)
-    """ for i in tmp:
-        print(i,'\t',tmp) """
-    exit()
-    for a in A[0,:]:
-        last_element = a
-    print(last_element.to)
-    exit()
-    v = A[3,:]
-    print(v)
-    print('\n\n\n')
-    #print(v[
-    #print(v)
-    #print(A[3,9:])
-    #print(A)
-    exit()
-
-    print(A.toarray())
-    exit()
-    print(y)
-    print(A)
-
-
-def solve(A, y):
-
-    # A is the adjacency matrix
-    # Gaussian elimination mod 2
-    r, c = A.shape
-
-    for j in range(c):
-        if A[j,j] == 0:
-            swap_diagonal(A, j)
-        
-        maxi = find_pivot(A, j) # what if 
-        print('first pivot: ',maxi)
-
-        while maxi > j: # meaning there are non-zero elements below A[j, j]
-            #print((A[maxi,:] - A[j,:]))
-            A[maxi,:] = (A[maxi,:] - A[j,:])
-            print('data: ',A[maxi,:].data[0])
-            A[maxi,:].data = mod2_data(A[maxi,:].data)
-            print('data: ',A[maxi,:].data[0])
-            exit()
-            print(A.toarray())
-            #y[maxi].data = (y[maxi] - y[j]).data %2
-            maxi = find_pivot(A, j)
-            print('second pivot', maxi)
-            exit()
-
-    # at this point A should be an upper diagonal matrix
-    print(A)
-    return
-# define sparse matrix class for bool operations ... we want row add, swaps etc.
-# do no store zeros ....
 
 if __name__ == "__main__":
     main()
