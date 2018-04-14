@@ -54,13 +54,18 @@ def generate_XOR_formula(N=10, M=10, K=3):
         formula.add(tup)
     return formula
 
-def generate_sparse(N=10,M=10,K=3):
-    formula = generate_XOR_formula(N,M,K)
+def generate_sparse(N=10, M=10, K=3, formula=None):
+    # Can specify formula, but still have to specify N,M,K
+
+    if formula is None:
+        formula = generate_XOR_formula(N,M,K)
+
     A = np.zeros((M,N),dtype=int)
     for i, clause in enumerate(formula):
         for literal in clause:
             A[i, literal]=1
     return A, formula
+
 
 def verify_solution(A, y, sol):
     nclause = A.shape[0]
@@ -207,17 +212,23 @@ def sample_solution_GE(A, y, pivot_ls):
 
 class XOR_SOLVE:
 
-    def __init__(self, N=100, M=80, K=3, save_formula=True):
+    def __init__(self, N=100, M=80, K=3, f=None, y=None, save_formula=True):
         self.N = N
         self.M = M
         self.K = K
-        self.A, self.f = generate_sparse(N, M, K)
+        self.A, self.f = generate_sparse(N, M, K, formula = f)
+        
         file_name = 'formula/formula_N=%i_M=%i_K=%i.pkl'%(N,M,K)
 
         if save_formula:
             pickle.dump(self.f, open(file_name,'wb'))
 
-        self.y = np.random.randint(0, 2, M) # random constraints
+        if y is not None:
+            self.y_original = np.copy(y)
+        else:
+            self.y_original= np.random.randint(0, 2, M) # random constraints
+
+        self.y = np.copy(self.y_original)
         self.is_reduced = False
     
     def reduce_system(self):
