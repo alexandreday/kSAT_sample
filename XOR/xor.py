@@ -5,7 +5,7 @@ from collections import Counter
 
 def main():
 
-    alpha = np.arange(0.92, 1.001, 0.01)
+    alpha = np.arange(0.5, 1.001, 0.01)
     N=100
     K=3
     time_vs_alpha = []
