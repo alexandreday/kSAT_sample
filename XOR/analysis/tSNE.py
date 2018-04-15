@@ -4,18 +4,23 @@ import sys, os
 
 i_param = int(sys.argv[1].split('=')[1]) # specified through the command line !
 
-root= '' # root absolute path insert here ...
-file_list = '' # absolute path insert here .. 
+root_in= '/projectnb/fheating/SAT_GLASS/XORSAT/data/sol/' # root absolute path insert here ...
+root_out = '/projectnb/fheating/SAT_GLASS/XORSAT/analysis/TSNE/'
+file_list = '/projectnb/fheating/SAT_GLASS/XORSAT/data/sol/file_name.txt' # absolute path insert here .. 
 
 i_count = 0
 fname_out = None
 for f in open(file_list,'r'):
     if i_count == i_param:
-        fname_in = f
+        fname_in = root_in+f
         sp = f.split('_')
         param = sp[3:]
-        fname_out = 'tSNE_'+'_'.join(sp[3:])
+        fname_out = root_out+'tSNE_'+'_'.join(sp[3:])
         break
+
+print('Reading from %s'%fname_in)
+print('Saving in %s'%fname_out)
+
 
 # ---------> RUNNING TSNE
 if fname_out is not None:
