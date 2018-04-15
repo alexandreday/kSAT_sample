@@ -23,7 +23,8 @@ print('[xor.py]    Running with the following parameters ...')
 print(param)
 
 start_time = time.time()
-xor = XOR_SOLVE(int(param['N']), int(param['M']), int(param['K']))
+xor = XOR_SOLVE(int(param['N']), int(param['M']), int(param['K']), save_formula=False)
+A_original = np.copy(xor.A)
 
 X = xor.sample_solution(int(param['n_sample']), verbose=True)
 
@@ -50,12 +51,8 @@ print('[xor.py]   data saved to :')
 print(file_formula)
 print(file_solution)
 
-pickle.dump([xor.f, xor.y], open(file_formula,'wb'))
+pickle.dump([xor.f, xor.y_original], open(file_formula,'wb'))
 pickle.dump(np.packbits(X), open(file_solution,'wb'))
-
-
-
-
 
 
 

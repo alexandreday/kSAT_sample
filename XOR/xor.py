@@ -52,12 +52,14 @@ def generate_XOR_formula(N=10, M=10, K=3):
     while len(formula) < M:
         tup = tuple(sample_tuple(N, K))
         formula.add(tup)
-    return formula
+    return list(formula) # better to work with lists => order is always preserved ! 
 
 def generate_sparse(N=10, M=10, K=3, formula=None):
     # Can specify formula, but still have to specify N,M,K
 
-    if formula is None:
+    if formula is not None:
+        formula = formula
+    else:
         formula = generate_XOR_formula(N,M,K)
 
     A = np.zeros((M,N),dtype=int)
@@ -66,11 +68,10 @@ def generate_sparse(N=10, M=10, K=3, formula=None):
             A[i, literal]=1
     return A, formula
 
-
 def verify_solution(A, y, sol):
     nclause = A.shape[0]
     for i in range(nclause):
-        if np.sum(A[i, :] * sol) % 2 != y[i]:
+        if np.dot(A[i, :], sol) % 2 != y[i]:
             return False
     return True
 
@@ -208,6 +209,7 @@ def sample_solution_GE(A, y, pivot_ls):
         i, j = p
         xsol[j]^= (y[i] + np.dot(A[i, :], xsol)) % 2
     
+    assert verify_solution(A, y, xsol)
     return xsol
 
 class XOR_SOLVE:
@@ -216,11 +218,10 @@ class XOR_SOLVE:
         self.N = N
         self.M = M
         self.K = K
-        self.A, self.f = generate_sparse(N, M, K, formula = f)
+        self.A, self.f = generate_sparse(N, M, K, formula = f) # A is not reduced at this point
         
-        file_name = 'formula/formula_N=%i_M=%i_K=%i.pkl'%(N,M,K)
-
         if save_formula:
+            file_name = 'formula/formula_N=%i_M=%i_K=%i.pkl'%(N,M,K)
             pickle.dump(self.f, open(file_name,'wb'))
 
         if y is not None:
