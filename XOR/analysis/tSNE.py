@@ -3,7 +3,7 @@ import numpy as np
 import sys, os
 import pickle
 
-i_param = int(float(sys.argv[1].split('=ls')[1])) # specified through the command line !
+i_param = int(float(sys.argv[1].split('=')[1])) # specified through the command line !
 
 root_in= '/projectnb/fheating/SAT_GLASS/XORSAT/data/sol/' # root absolute path insert here ...
 root_out = '/projectnb/fheating/SAT_GLASS/XORSAT/analysis/TSNE/'
@@ -18,6 +18,7 @@ for f in open(file_list,'r'):
         param = sp[3:]
         fname_out = root_out+'tSNE_'+'_'.join(sp[3:])
         break
+    i_count+=1
 
 print('Reading from %s'%fname_in)
 print('Saving in %s'%fname_out)
