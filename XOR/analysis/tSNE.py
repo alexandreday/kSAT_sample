@@ -14,7 +14,7 @@ fname_out = None
 for f in open(file_list,'r'):
     if i_count == i_param:
         fname_in = root_in+f.strip('\n')
-        sp = f.split('_')
+        sp = f.strip('\n').split('_')
         param = sp[3:]
         fname_out = root_out+'tSNE_'+'_'.join(sp[3:])
         break
