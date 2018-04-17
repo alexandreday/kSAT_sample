@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  12 APR 2018 17:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  15 APR 2018 15:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -479,17 +479,17 @@ LaTeX Info: Redefining \nameref on input line 32.
 \@outlinefile=\write4
 \openout4 = `kSAT-TSNE.out'.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 56.
+LaTeX Font Info:    Try loading font information for U+msa on input line 50.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 56.
+LaTeX Font Info:    Try loading font information for U+msb on input line 50.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 56.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 50.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
@@ -510,27 +510,30 @@ File: figs/cartoon_pdiag-crop.pdf Graphic file (type pdf)
 Package pdftex.def Info: figs/cartoon_pdiag-crop.pdf used on input line 71.
 (pdftex.def)             Requested size: 246.0pt x 183.40518pt.
  [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./fi
-gs/rugged_vf-crop.pdf> <./figs/cartoon_pdiag-crop.pdf>] <figs/fig2.png, id=209,
+gs/rugged_vf-crop.pdf> <./figs/cartoon_pdiag-crop.pdf>] <figs/fig2.png, id=208,
  661.47125pt x 486.81876pt>
 File: figs/fig2.png Graphic file (type png)
 
 <use figs/fig2.png>
 Package pdftex.def Info: figs/fig2.png used on input line 99.
 (pdftex.def)             Requested size: 246.0pt x 181.04121pt.
- <figs/fig3.png, id=211, 480.79625pt x 394.47375pt>
+ <figs/fig3.png, id=210, 480.79625pt x 394.47375pt>
 File: figs/fig3.png Graphic file (type png)
 
 <use figs/fig3.png>
 Package pdftex.def Info: figs/fig3.png used on input line 105.
 (pdftex.def)             Requested size: 246.0pt x 201.83504pt.
- <figs/fig4.png, id=212, 417.56pt x 402.50375pt>
+ <figs/fig4.png, id=211, 417.56pt x 402.50375pt>
 File: figs/fig4.png Graphic file (type png)
 
 <use figs/fig4.png>
 Package pdftex.def Info: figs/fig4.png used on input line 110.
 (pdftex.def)             Requested size: 246.0pt x 237.13121pt.
- [2 <./figs/fig2.png> <./figs/fig3.png> <./figs/fig4.png>]
-(./kSAT-TSNE.bbl
+
+
+LaTeX Warning: Reference `dcluster' on page 2 undefined on input line 114.
+
+[2 <./figs/fig2.png> <./figs/fig3.png> <./figs/fig4.png>] (./kSAT-TSNE.bbl
 Underfull \hbox (badness 1137) in paragraph at lines 70--76
  []\OT1/cmr/m/n/9 P. Mehta, M. Bukov, C.-H. Wang, A. G. R. Day,
  []
@@ -541,47 +544,51 @@ Underfull \hbox (badness 1122) in paragraph at lines 114--119
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 162.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 162.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 164.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 164.
  [3] (./kSAT-TSNE.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 162.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 162.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 164.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 164.
 Package rerunfilecheck Info: File `kSAT-TSNE.out' has not changed.
 (rerunfilecheck)             Checksum: 720655459FF868E407F007F122844E8F;621.
+
+
+LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 8227 strings out of 492995
- 116799 string characters out of 6132704
- 217078 words of memory out of 5000000
- 11584 multiletter control sequences out of 15000+600000
+ 8229 strings out of 492995
+ 116841 string characters out of 6132704
+ 219080 words of memory out of 5000000
+ 11586 multiletter control sequences out of 15000+600000
  18251 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,7n,28p,1306b,337s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><
-/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
-usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></u
-sr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr
-/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/l
-ocal/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loc
-al/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local
-/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/te
-xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
-ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/
-2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
-017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/201
-7/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2017/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2017/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on kSAT-TSNE.pdf (3 pages, 791072 bytes).
+</usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></
+usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></u
+sr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
+r/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/
+local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/lo
+cal/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loca
+l/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/
+texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/tex
+live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texliv
+e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
+17/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2017
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2017/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
+Output written on kSAT-TSNE.pdf (3 pages, 801773 bytes).
 PDF statistics:
- 304 PDF objects out of 1000 (max. 8388607)
- 241 compressed objects within 3 object streams
+ 309 PDF objects out of 1000 (max. 8388607)
+ 245 compressed objects within 3 object streams
  32 named destinations out of 1000 (max. 500000)
  114 words of extra memory for PDF output out of 10000 (max. 10000000)
 

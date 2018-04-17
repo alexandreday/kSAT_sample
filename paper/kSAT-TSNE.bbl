@@ -93,14 +93,14 @@
   {Zecchina}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
   {Journal of Statistical Physics}\ }\textbf {\bibinfo {volume} {111}},\
   \bibinfo {pages} {505} (\bibinfo {year} {2003})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Davis}\ and\ \citenamefont
-  {Putnam}(1960)}]{davis1960computing}%
+\bibitem [{\citenamefont {Rodriguez}\ and\ \citenamefont
+  {Laio}(2014)}]{rodriguez2014clustering}%
   \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
-  {Davis}}\ and\ \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Putnam}},\
-  }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Journal of the ACM
-  (JACM)}\ }\textbf {\bibinfo {volume} {7}},\ \bibinfo {pages} {201} (\bibinfo
-  {year} {1960})}\BibitemShut {NoStop}%
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Rodriguez}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Laio}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal}
+  {Science}\ }\textbf {\bibinfo {volume} {344}},\ \bibinfo {pages} {1492}
+  (\bibinfo {year} {2014})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Venturelli}\ \emph {et~al.}(2015)\citenamefont
   {Venturelli}, \citenamefont {Mandra}, \citenamefont {Knysh}, \citenamefont
   {O'Gorman}, \citenamefont {Biswas},\ and\ \citenamefont
