@@ -267,5 +267,11 @@ class XOR_SOLVE:
     def check_solution(self, x):
         return verify_solution(self.A, self.y, x)
 
+    def check_solution_formula(self, x):
+        for i, clause in enumerate(self.f):
+            np.sum(x[np.array(list(clause))]) % 2 != self.y_original[i]:
+            return False
+        return True
+        
 if __name__ == "__main__":
     main()
