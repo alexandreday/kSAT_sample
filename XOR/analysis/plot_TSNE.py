@@ -5,7 +5,7 @@ from fdc import FDC, plotting
 from sklearn.preprocessing import StandardScaler as SS
 
 
-# CONCLUSION => TSNE IS A big mess haha
+# CONCLUSION => TSNE is a big 
 # => be careful next time
 
 N=1000
