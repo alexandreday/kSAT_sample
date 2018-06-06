@@ -8,18 +8,19 @@ from sklearn.preprocessing import StandardScaler as SS
 # CONCLUSION => TSNE is a big 
 # => be careful next time
 
-N=1000
+N=500
 K=3
-alpha_range = np.arange(0.6,1.001,0.01)
+alpha_range = np.arange(0.5,1.001,0.01)
 
-root= '/Users/alexandreday/GitProject/kSAT_sample/XOR/data/TSNE/'
+root= '/Users/alexandreday/GitProject/kSAT_sample/XOR/data/TSNE5/'
 root_hist= '/Users/alexandreday/GitProject/kSAT_sample/XOR/data/distance/'
 root_out= '/Users/alexandreday/GitProject/kSAT_sample/XOR/analysis/plots/'
 
 for a in alpha_range:
-    print(a)
+    #print(a)
     f = 'tSNE_N=%i_a=%.3f_K=%i.pkl'%(N,a,K)
-    X = pickle.load(open(root+f,'rb'))
+    X,l = pickle.load(open(root+f,'rb'))
+    print(a,'\t',l)
     #print(a, lX, pca_r,sep='\t')
 
     plt.scatter(X[:,0], X[:,1],s=0.5)

@@ -1,4 +1,5 @@
 *.txt
+!life.txt
 data/
 test/
 solutions/*
